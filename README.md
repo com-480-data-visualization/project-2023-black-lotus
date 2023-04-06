@@ -40,11 +40,15 @@ The target audience for this project includes aviation safety experts, researche
 
 ### Exploratory Data Analysis
 
-> Pre-processing of the data set you chose
-> - Show some basic statistics and get insights about the data
+You can see deails of data analysis we did in the notebook titled `src/data_exploration.ipynb`. Within this notebook, we have provided a detailed analysis of the aviation accident dataset, including several visualizations. One of these visualizations demonstrates that the number of plane crashes has decreased over time, suggesting an improvement in aviation safety.
+
+![crashes-per-year](./data/images/crashes-per-year.png)
+
+Additionally, we have included a heatmap visualization displaying the distribution of crashes since 1982, which reveals distinct territorial patterns. These findings highlight the importance of continued efforts to improve aviation safety and provide insights into potential areas for improvement.
+
+![crashes-heatmap](./data/images/crashes-heatmap.png)
 
 ### Related work
-
 
 > - What others have already done with the data?
 > - Why is your approach original?
