@@ -19,15 +19,24 @@ Please, fill the following sections about your project.
 
 ### Dataset
 
-> Find a dataset (or multiple) that you will explore. Assess the quality of the data it contains and how much preprocessing / data-cleaning it will require before tackling visualization. We recommend using a standard dataset as this course is not about scraping nor data processing.
->
-> Hint: some good pointers for finding quality publicly available datasets ([Google dataset search](https://datasetsearch.research.google.com/), [Kaggle](https://www.kaggle.com/datasets), [OpenSwissData](https://opendata.swiss/en/), [SNAP](https://snap.stanford.edu/data/) and [FiveThirtyEight](https://data.fivethirtyeight.com/)), you could use also the DataSets proposed by the ENAC (see the Announcements section on Zulip).
+We will be visualizing the NTSB aviation accident database from the [Kaggle](https://www.kaggle.com/datasets/khsamaha/aviation-accident-database-synopses?select=AviationData.csv). As stated there, "it contains information from 1962 and later about civil aviation accidents and selected incidents within the United States, its territories and possessions, and in international waters".
+
+The NTSB is a federal agency in the United States that is responsible for investigating civil aviation accidents and incidents, as well as accidents and incidents involving other modes of transportation. Their goal is to identify the cause of accidents and make recommendations to prevent similar accidents from happening in the future. The NTSB aviation accident database is an important tool for researchers, investigators, and others who are interested in studying aviation safety and learning from past incidents to improve safety in the future.
+
 
 ### Problematic
 
-> Frame the general topic of your visualization and the main axis that you want to develop.
-> - What am I trying to show with my visualization?
-> - Think of an overview for the project, your motivation, and the target audience.
+One particularly interesting way to explore this dataset is to map out the location and frequency of plane crashes over time. By creating a time-lapse map of aviation accidents, it is possible to see how the frequency and severity of accidents has changed over the years, as well as to identify any geographic or temporal patterns in the data. Overall, mapping out aviation accidents through time can be a powerful tool for understanding the history of aviation safety and identifying ways to improve it in the future.
+
+#### Overview:
+By analyzing this dataset and mapping out the location and frequency of accidents over time, we can gain a better understanding of the safety trends in the aviation industry. Furthermore, by identifying the causes of these accidents, we can work to improve safety measures and prevent future incidents. Our goal is to create an interactive map that allows users to explore the location and causes of aviation accidents in the United States and around the world. 
+
+#### Motivation:
+The motivation for this project is to gain insights into the patterns and trends of aviation accidents over time and to identify areas of concern that can be addressed to improve aviation safety. By mapping out the location and frequency of plane crashes, it will be possible to see how accidents have changed over the years and to identify any trends or patterns that may have contributed to the accidents. By including information about the cause of each crash, we hope to raise awareness about the importance of aviation safety and to promote ongoing efforts to improve safety measures in the industry.
+
+#### Target Audience:
+The target audience for this project includes aviation safety experts, researchers, policymakers, and anyone who is interested in understanding the history of aviation safety and identifying ways to improve it in the future. This project could be particularly useful for policymakers and aviation safety experts who are looking to prioritize safety measures and identify areas of concern to prevent future accidents. Additionally, this project could be of interest to the general public who may be interested in learning more about the history of aviation safety and the ways in which accidents have changed over time.
+
 
 ### Exploratory Data Analysis
 
