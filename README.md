@@ -11,6 +11,10 @@
 
 ## Milestone 1 (7th April, 5pm)
 
+In order to run notebooks, you have to install required libraries
+```
+$ pip install -r requirements.txt
+```
 
 ### Dataset
 
