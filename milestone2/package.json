@@ -12,6 +12,10 @@
     "vite": "^4.2.0"
   },
   "dependencies": {
-    "@picocss/pico": "^1.5.10"
+    "@picocss/pico": "^1.5.10",
+    "@turf/boolean-point-in-polygon": "^6.5.0",
+    "@turf/helpers": "^6.5.0",
+    "d3": "^7.8.4",
+    "topojson": "^3.0.2"
   }
 }
