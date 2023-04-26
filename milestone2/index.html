@@ -8,8 +8,26 @@
   <body>
     <main class="container">
       <h1>Air Crash Investigation</h1>
-      <div>
-        <svg id="map" width="740" height="500"></svg>
+      <div class="map-grid">
+        <div class="svg-container">
+          <svg id="map" width="740" height="500" viewbox="0 0 740 500"></svg>
+        </div>
+        <div class="map-filtering-container">
+          <h3>Year: <span id="current-year">2008</span></h3>
+          <label for="lastname">
+            <input
+              type="range"
+              id="year"
+              name="year"
+              placeholder="2008"
+              value="2008"
+              required
+              min="2001"
+              max="2022"
+              step="1"
+            />
+          </label>
+        </div>
       </div>
     </main>
     <script type="module" src="/main.js"></script>
