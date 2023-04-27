@@ -1,6 +1,10 @@
 import * as d3 from "d3";
 import * as topojson from "topojson";
 
+const MAP_SCALE = 800;
+const MAX_BUBBLE_RADIUS = 20;
+const TRANSITION_DURATION = 1000;
+
 async function drawUSA(svg, projection, us) {
   let path = d3.geoPath(projection);
   let statemesh = topojson.mesh(us, us.objects.states, (a, b) => a !== b);
@@ -33,7 +37,7 @@ async function updateMap(svg, projection, counties) {
     0,
     d3.max(counties.features.map((f) => f.properties.crashCount)),
   ];
-  const radius = d3.scaleSqrt(domain, [0, 20]);
+  const radius = d3.scaleSqrt(domain, [0, MAX_BUBBLE_RADIUS]);
   svg
     .selectAll("circle")
     .data(counties.features)
@@ -47,13 +51,13 @@ async function updateMap(svg, projection, counties) {
             (c) => `translate(${projection(c.properties.center)})`
           )
           .transition()
-          .duration(1000)
+          .duration(TRANSITION_DURATION)
           .attr("r", (c) => radius(c.properties.crashCount));
       },
       function (update) {
         return update
           .transition()
-          .duration(1000)
+          .duration(TRANSITION_DURATION)
           .attr("r", (c) => radius(c.properties.crashCount));
       }
     );
@@ -84,7 +88,7 @@ export default async function drawBubbleMap(data) {
 
   const projection = d3
     .geoAlbersUsa()
-    .scale(800)
+    .scale(MAP_SCALE)
     .translate([width / 2, height / 2]);
 
   const response = await fetch("/data/counties-10m.json");
