@@ -1,8 +1,9 @@
 import drawBubbleMap from "./charts/bubbleMap";
 import "@picocss/pico/css/pico.min.css";
 import "./assets/css/main.css";
-import bootstrapYearRange from "./lib/yearRange";
 import loadData from "./lib/loadData";
+import "./lib/doubleSlider";
+import bootstrapYearDoubleSlider from "./lib/doubleSlider";
 
 async function initializeDocument() {
   let data = await loadData();
@@ -11,13 +12,18 @@ async function initializeDocument() {
     data.filter((crash) => crash["Publication.Date"].slice(6) == "2008")
   );
   const currentYearSpan = document.getElementById("current-year");
-  bootstrapYearRange(
-    (value) => {
-      currentYearSpan.innerText = value;
+
+  bootstrapYearDoubleSlider(
+    ([min, max]) => {
+      currentYearSpan.innerText = `${min} - ${max}`;
     },
-    (value) => {
+    ([min, max]) => {
       updateMap(
-        data.filter((crash) => crash["Publication.Date"].slice(6) == value)
+        data.filter(
+          (crash) =>
+            crash["Publication.Date"].slice(6) >= min &&
+            crash["Publication.Date"].slice(6) <= max
+        )
       );
     }
   );
