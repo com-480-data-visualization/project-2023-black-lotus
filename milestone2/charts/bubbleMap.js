@@ -7,17 +7,10 @@ async function drawUSA(svg, projection, us) {
   let nation = topojson.feature(us, us.objects.nation);
 
   //Draw US background
-  svg.append("path").datum(nation).attr("fill", "#e0e0e0").attr("d", path);
+  svg.append("path").datum(nation).classed("state", true).attr("d", path);
 
   //Draw statelines
-  svg
-    .append("path")
-    .attr("pointer-events", "none")
-    .attr("fill", "none")
-    .attr("stroke", "gray")
-    .attr("stroke-linecap", "round")
-    .attr("stroke-linejoin", "round")
-    .attr("d", path(statemesh));
+  svg.append("path").classed("state-line", true).attr("d", path(statemesh));
 }
 
 async function updateMap(svg, projection, counties) {
@@ -48,11 +41,7 @@ async function updateMap(svg, projection, counties) {
       function (enter) {
         return enter
           .append("circle")
-          .attr("fill", "brown")
-          .attr("fill-opacity", 0.5)
-          .attr("stroke", "white")
-          .attr("stroke-width", 0.5)
-          .attr("stroke-opacity", 0.8)
+          .classed("bubble", true)
           .attr(
             "transform",
             (c) => `translate(${projection(c.properties.center)})`
