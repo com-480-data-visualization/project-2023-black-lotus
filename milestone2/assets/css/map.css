@@ -16,8 +16,20 @@
   grid-column: 4 / 6;
 }
 
+.map-filtering-container h3 {
+  margin-bottom: 0;
+}
+
 @media (max-width: 992px) {
   .map-grid {
     grid-template-columns: 1fr;
+  }
+
+  .svg-container {
+    grid-column: 1 / 2;
+  }
+
+  .map-filtering-container {
+    grid-column: 1 / 2;
   }
 }

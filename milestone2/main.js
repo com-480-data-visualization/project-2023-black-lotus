@@ -1,6 +1,6 @@
 import drawBubbleMap from "./charts/bubbleMap";
 import "@picocss/pico/css/pico.min.css";
-import "./assets/css/main.css";
+import "./assets/css/map.css";
 import loadData from "./lib/loadData";
 import "./lib/doubleSlider";
 import bootstrapYearDoubleSlider from "./lib/doubleSlider";
