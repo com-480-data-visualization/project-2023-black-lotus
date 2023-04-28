@@ -7,9 +7,9 @@ import bootstrapYearDoubleSlider from "./lib/doubleSlider";
 
 async function initializeDocument() {
   let data = await loadData();
-  data = data.filter((c) => !!c["Publication.Date"]);
+  data = data.filter((c) => !!c["Event.Year"]);
   let updateMap = await drawBubbleMap(
-    data.filter((crash) => crash["Publication.Date"].slice(6) == "2008")
+    data.filter((crash) => crash["Event.Year"] == "2008")
   );
   const currentYearSpan = document.getElementById("current-year");
 
@@ -20,9 +20,7 @@ async function initializeDocument() {
     ([min, max]) => {
       updateMap(
         data.filter(
-          (crash) =>
-            crash["Publication.Date"].slice(6) >= min &&
-            crash["Publication.Date"].slice(6) <= max
+          (crash) => crash["Event.Year"] >= min && crash["Event.Year"] <= max
         )
       );
     }
