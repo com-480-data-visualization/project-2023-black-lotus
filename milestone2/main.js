@@ -6,6 +6,7 @@ import { loadDataLatLon, loadAllData } from "./lib/loadData";
 import "./lib/doubleSlider";
 import bootstrapYearDoubleSlider from "./lib/doubleSlider";
 import bootstrapRing from "./charts/ring";
+import bootstrapSpiral from "./charts/spiral";
 
 function getSeason(month) {
   if (month <= 2) {
@@ -80,7 +81,8 @@ async function initializeDocument() {
       );
     });
   console.log(random);
-  bootstrapRing(random.reverse());
+  //bootstrapRing(random.reverse());
+  bootstrapSpiral(random);
 }
 
 window.addEventListener("DOMContentLoaded", initializeDocument);
