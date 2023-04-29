@@ -68,7 +68,7 @@ function updateCounties(counties, data) {
     if (crash.CountyCode in bins) {
       bins[crash.CountyCode] = bins[crash.CountyCode] + 1;
     } else {
-      bins[crash.CountyCode] = 0;
+      bins[crash.CountyCode] = 1;
     }
     return bins;
   }, {});

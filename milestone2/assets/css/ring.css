@@ -1,0 +1,64 @@
+.ring-grid {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-auto-flow: dense;
+}
+
+.ring-container {
+  grid-column: 3 / 6;
+}
+
+.ring-container svg {
+  width: 100%;
+  height: auto;
+}
+
+.ring-text-container {
+  grid-column: 1 / 3;
+}
+
+.ring-text-container h3 {
+  margin-bottom: 1rem;
+}
+
+.circle-max {
+  fill: none;
+  stroke: var(--contrast);
+  stroke-width: 0.5;
+}
+
+.ring-bin {
+  cursor: pointer;
+  transition: fill-opacity 0.3s;
+}
+
+.crash-count,
+.crash-time {
+  transition: visibility 0.3s;
+}
+
+.crash-count {
+  fill: var(--h1-color);
+  font: 700 2rem var(--font-family);
+}
+
+.crash-time {
+  fill: var(--color);
+  font: var(--font-weight) var(--font-size) var(--font-family);
+}
+
+@media (max-width: 992px) {
+  .ring-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ring-container {
+    grid-column: 1 / 2;
+  }
+
+  .ring-text-container {
+    margin-top: 2rem;
+    grid-column: 1 / 2;
+  }
+}
