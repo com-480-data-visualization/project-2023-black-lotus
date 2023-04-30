@@ -55,7 +55,7 @@ export default function bootstrapRing(data) {
       .data(ring)
       .join("path")
       .attr("fill", (d) => color(d.value))
-      .classed("ring-bin", true)
+      .classed("bar", true)
       .attr("d", arc);
 
     //CIRCLE MAX
