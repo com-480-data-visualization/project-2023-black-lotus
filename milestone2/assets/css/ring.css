@@ -28,14 +28,15 @@
   stroke-width: 0.5;
 }
 
-.ring-bin {
+.bar {
   cursor: pointer;
   transition: fill-opacity 0.3s;
 }
 
 .crash-count,
-.crash-time {
-  transition: visibility 0.3s;
+.crash-time,
+.crash-text {
+  transition: fill-opacity 0.3s;
 }
 
 .crash-count {
@@ -43,7 +44,8 @@
   font: 700 2rem var(--font-family);
 }
 
-.crash-time {
+.crash-time,
+.crash-text {
   fill: var(--color);
   font: var(--font-weight) var(--font-size) var(--font-family);
 }

@@ -2,27 +2,22 @@ import * as d3 from "d3";
 
 export default function bootstrapSpiral(data) {
   const binsPerRing = 40;
-  const svg = d3.select("#ring");
+  let svg = d3.select("#ring");
   const width = +svg.attr("width");
   const height = +svg.attr("height");
+  svg = svg
+    .append("g")
+    .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
-  const rings = Array.from(
-    { length: Math.floor(data.length / binsPerRing) },
-    () => []
-  );
+  const r = d3.min([width, height]) / 2 - 50;
 
-  data = data.map((d, i) => {
-    return { value: d.crashCount, index: i };
-  });
-  const r = d3.min([width, height]) / 2 - 30;
-
-  const radius = d3.scaleLinear().domain([0, data.length]).range([r, 80]);
+  const radius = d3.scaleLinear().domain([0, data.length]).range([r, 100]);
 
   const numSpirals = 4;
   const angle = d3
     .scaleLinear()
     .domain([0, data.length])
-    .range([0, 2 * numSpirals * Math.PI]);
+    .range([0, 2 * (numSpirals + 1 / 10 + 1 / 120) * Math.PI]);
 
   const radial = d3
     .lineRadial()
@@ -32,28 +27,34 @@ export default function bootstrapSpiral(data) {
 
   const spiral = svg
     .append("path")
-    .attr("transform", `translate(${width / 2}, ${height / 2})`)
     .attr("fill", "none")
-    .attr("stroke", "steelblue")
-    .attr("stroke-width", "4")
+    .attr("stroke", "none")
+    .attr("stroke-width", "0.5")
     .attr("d", radial(data));
 
   const maxCrashes = d3.max(data, (d) => d.value);
   var spiralLength = spiral.node().getTotalLength(),
     barWidth = spiralLength / data.length - 1;
-  const heightScale = d3.scaleLinear().domain([0, maxCrashes]).range([0, 30]);
+  const heightScale = d3.scaleLinear().domain([0, maxCrashes]).range([0, 50]);
 
+  const years = [...new Set(data.map((d) => d.date.getFullYear()))];
+  console.log(years);
   const timeScale = d3.scaleLinear([0, data.length], [0, spiralLength]);
-  const color = d3.scaleSequential([0, maxCrashes], d3.interpolateBlues);
+  const color = d3.scaleSequential(
+    [d3.min(years), d3.max(years)],
+    d3.interpolateRainbow
+  );
+
   svg
     .append("g")
-    .attr("transform", `translate(${width / 2}, ${height / 2})`)
     .selectAll("rect")
     .data(data)
     .enter()
     .append("rect")
+    .attr("class", "bar")
     .attr("x", function (d, i) {
       // placement calculations
+
       var linePer = timeScale(i + 1),
         posOnLine = spiral.node().getPointAtLength(linePer),
         angleOnLine = spiral.node().getPointAtLength(linePer - barWidth / 2);
@@ -70,97 +71,99 @@ export default function bootstrapSpiral(data) {
       return d.y;
     })
     .attr("width", function (d, i) {
-      if (i == 0) {
-        return barWidth + 1;
-      }
+      // if (i < 14 * 12) {
+      //   return ((Math.sqrt(d.x * d.x + d.y * d.y) * 3) / 180) * Math.PI;
+      // }
+      // return ((Math.sqrt(d.x * d.x + d.y * d.y) * 3) / 180) * Math.PI;
+
       return barWidth;
     })
-    .attr("height", function (d) {
-      return heightScale(d.value);
-    })
-    .style("fill", "steelblue")
+    .attr("rx", 2)
+    .attr("ry", 2)
+    .style("fill", (d) => color(d.date.getFullYear()))
     .style("stroke", "none")
     .attr("transform", function (d) {
       return "rotate(" + d.a + "," + d.x + "," + d.y + ")"; // rotate the bar
+    })
+    .transition()
+    .attr("height", function (d) {
+      return heightScale(d.value);
+    })
+    .delay((d, i) => i * 10);
+
+  const label = svg
+    .append("text")
+    .attr("text-anchor", "middle")
+    .attr("fill", "#888");
+
+  label
+    .append("tspan")
+    .attr("class", "crash-count")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("dy", "-0.5em")
+    .attr("font-size", "3em");
+
+  label
+    .append("tspan")
+    .attr("class", "crash-text")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("dy", "0.85em")
+    .attr("font-size", "1.5em");
+
+  label
+    .append("tspan")
+    .attr("class", "crash-time")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("dy", "2.25em");
+  const bars = svg.selectAll(".bar");
+  console.log(bars);
+  bars
+    .on("mouseleave", () => {
+      bars.attr("fill-opacity", 1);
+      label.style("fill-opacity", 0);
+    })
+    .on("mouseenter", (event, d) => {
+      bars.attr("fill-opacity", (bin) => (bin.date == d.date ? 1 : 0.3));
+      label.style("fill-opacity", 1).select(".crash-count").text(d.value);
+      label.select(".crash-text").text("crashes in");
+      label.select(".crash-time").text(
+        `${d.date.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+        })}`
+      );
     });
 
-  // const maxCrashes = d3.max(data, (d) => d.crashCount);
-  // const startHeight = height / 4;
-  // const maxRingHeight = 30;
-  // const spacing = 0;
+  //RENDER Ticks
+  const offset = 20;
+  const axisTicks = svg
+    .selectAll(".tick")
+    .data(data.filter((d) => d.date.getMonth() == 0))
+    .join("g")
+    .attr("class", "tick")
+    .attr("fill", "var(--color)")
+    .attr("font-size", "0.8rem")
+    .call((g) =>
+      g
+        .append("line")
+        .attr("stroke", "var(--color)")
+        .attr("stroke-width", 1)
+        .attr("stroke-dasharray", "1,1")
+        .attr("x1", (d) => d.x + barWidth)
+        .attr("y1", (d) => d.y)
+        .attr("x2", (d) => d.x + barWidth)
+        .attr("y2", (d) => d.y - offset)
+        .attr("transform", (d) => `rotate(${d.a},${d.x},${d.y})`)
+    );
 
-  // const scaleX = d3
-  //   .scaleBand()
-  //   .domain(rings[0].map(({ index: i }) => i))
-  //   .range([0, 2 * Math.PI])
-  //   .align(0);
-
-  // const color = d3.scaleSequential([0, maxCrashes], d3.interpolateBlues);
-  // rings.forEach((ring, index) => {
-  //   const scaleY = d3
-  //     .scaleRadial()
-  //     .domain([0, maxCrashes])
-  //     .range([
-  //       startHeight + (maxRingHeight + spacing) * index,
-  //       startHeight + maxRingHeight * (index + 1) + spacing * index,
-  //     ]);
-  //   const arc = d3
-  //     .arc()
-  //     .innerRadius(startHeight + (maxRingHeight + spacing) * index)
-  //     .outerRadius((d) => scaleY(d.value))
-  //     .startAngle((d) => scaleX(d.index))
-  //     .endAngle((d) => scaleX(d.index) + scaleX.bandwidth());
-
-  //   svg
-  //     .append("g")
-  //     .classed(`ring-${index}`, true)
-  //     .attr("transform", `translate(${width / 2}, ${height / 2})`)
-  //     .selectAll("path")
-  //     .data(ring)
-  //     .join("path")
-  //     .attr("fill", (d) => color(d.value))
-  //     .classed("ring-bin", true)
-  //     .attr("d", arc);
-
-  //   //CIRCLE MAX
-  //   svg
-  //     .append("circle")
-  //     .classed(`circle-max`, true)
-  //     .attr("r", startHeight + maxRingHeight * (index + 1) + spacing * index)
-  //     .attr("cx", width / 2)
-  //     .attr("cy", height / 2);
-  // });
-
-  // const label = svg
-  //   .append("text")
-  //   .attr("text-anchor", "middle")
-  //   .attr("fill", "#888")
-  //   .attr("transform", `translate(${width / 2}, ${height / 2})`)
-  //   .style("visibility", "hidden");
-
-  // label
-  //   .append("tspan")
-  //   .attr("class", "crash-count")
-  //   .attr("x", 0)
-  //   .attr("y", 0)
-  //   .attr("dy", "-0.1em")
-  //   .attr("font-size", "3em");
-
-  // label
-  //   .append("tspan")
-  //   .attr("class", "crash-time")
-  //   .attr("x", 0)
-  //   .attr("y", 0)
-  //   .attr("dy", "1.5em");
-  // const paths = svg.selectAll(".ring-bin");
-  // paths
-  //   .on("mouseleave", () => {
-  //     paths.attr("fill-opacity", 1);
-  //     label.style("visibility", "hidden");
-  //   })
-  //   .on("mouseenter", (event, d) => {
-  //     paths.attr("fill-opacity", (bin) => (bin.name == d.name ? 1 : 0.3));
-  //     label.style("visibility", null).select(".crash-count").text(d.value);
-  //     label.select(".crash-time").text(`crashes in ${d.name}`);
-  //   });
+  axisTicks
+    .append("text")
+    .attr("dy", "1em")
+    .attr("x", (d, i) => d.x - barWidth / 2)
+    .attr("y", (d, i) => d.y)
+    .attr("transform", (d, i) => `rotate(${d.a + 180},${d.x},${d.y})`)
+    .text((d) => "'" + `${d.date.getFullYear()}`.slice(2));
 }

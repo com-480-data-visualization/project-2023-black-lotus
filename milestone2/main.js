@@ -5,23 +5,7 @@ import "./assets/css/ring.css";
 import { loadDataLatLon, loadAllData } from "./lib/loadData";
 import "./lib/doubleSlider";
 import bootstrapYearDoubleSlider from "./lib/doubleSlider";
-import bootstrapRing from "./charts/ring";
 import bootstrapSpiral from "./charts/spiral";
-
-function getSeason(month) {
-  if (month <= 2) {
-    return "Winter";
-  }
-  if (month >= 3 && month <= 5) {
-    return "Spring";
-  }
-
-  if (month >= 6 && month <= 8) {
-    return "Summer";
-  }
-
-  return "Autumn";
-}
 
 async function initializeDocument() {
   let dataLatLon = await loadDataLatLon();
@@ -45,43 +29,40 @@ async function initializeDocument() {
   );
 
   const allData = await loadAllData();
-  const startDate = new Date(1982, 12, 22);
-  const crashesPerSeason = allData.reduce((crashesPerSeason, crash) => {
-    const crashDate = new Date(crash["Event.Date"]);
-    const crashSeason = getSeason(+crash["Event.Month"]);
-    if (crashDate >= startDate) {
-      if (!(crash["Event.Year"] in crashesPerSeason)) {
-        crashesPerSeason[crash["Event.Year"]] = {};
+  const startYear = 1982;
+  const crashesPerMonth = allData.reduce((crashesPerMonth, crash) => {
+    const crashYear = crash["Event.Year"];
+    const crashMonth = crash["Event.Month"];
+    if (crashYear >= startYear) {
+      if (!(crashYear in crashesPerMonth)) {
+        crashesPerMonth[crashYear] = {};
       }
 
-      if (crashSeason in crashesPerSeason[crash["Event.Year"]]) {
-        crashesPerSeason[crash["Event.Year"]][crashSeason].crashes += 1;
+      if (crashMonth in crashesPerMonth[crashYear]) {
+        crashesPerMonth[crashYear][crashMonth].crashes += 1;
       } else {
-        crashesPerSeason[crash["Event.Year"]][crashSeason] = {
+        crashesPerMonth[crashYear][crashMonth] = {
           crashes: 1,
         };
       }
     }
-    return crashesPerSeason;
+    return crashesPerMonth;
   }, {});
   const random = [];
-  Object.keys(crashesPerSeason)
-    .sort()
+  Object.keys(crashesPerMonth)
+    .sort((a, b) => +a - +b)
     .forEach((year) => {
       random.push(
-        ...Object.keys(crashesPerSeason[year])
-          .sort()
-          .map((season) => {
+        ...Object.keys(crashesPerMonth[year])
+          .sort((a, b) => +a - +b)
+          .map((month) => {
             return {
-              crashCount: crashesPerSeason[year][season].crashes,
-              season: season,
-              year: +year,
+              value: crashesPerMonth[year][month].crashes,
+              date: new Date(+year, +month - 1, 1),
             };
           })
       );
     });
-  console.log(random);
-  //bootstrapRing(random.reverse());
   bootstrapSpiral(random);
 }
 
