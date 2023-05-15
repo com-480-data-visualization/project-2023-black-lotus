@@ -1,66 +1,40 @@
 import * as d3 from "d3";
 import * as topojson from "topojson";
+import drawUSA from "./usaMap";
 
 const MAP_SCALE = 800;
 const MAX_BUBBLE_RADIUS = 20;
 const TRANSITION_DURATION = 1000;
 
-async function drawUSA(svg, projection, us) {
-  let path = d3.geoPath(projection);
-  let statemesh = topojson.mesh(us, us.objects.states, (a, b) => a !== b);
-  let nation = topojson.feature(us, us.objects.nation);
-
-  //Draw US background
-  svg.append("path").datum(nation).classed("state", true).attr("d", path);
-
-  //Draw statelines
-  svg.append("path").classed("state-line", true).attr("d", path(statemesh));
-}
-
 async function updateMap(svg, projection, counties) {
-  //Fill Counties
-  // const countyIndexIdMap = d3.map(counties.features, (d) => d.id);
-  // const color = d3.scaleSequential(
-  //   [0, d3.max(Object.values(data))],
-  //   d3.interpolateBlues
-  // );
-  // svg
-  //   .append("g")
-  //   .selectAll("path")
-  //   .data(counties.features)
-  //   .join("path")
-  //   .attr("fill", (d, i) => color(data[countyIndexIdMap[i]]))
-  //   .attr("d", path);
-
-  //Bubble Map
   const domain = [
     0,
     d3.max(counties.features.map((f) => f.properties.crashCount)),
   ];
   const radius = d3.scaleSqrt(domain, [0, MAX_BUBBLE_RADIUS]);
-  svg
-    .selectAll("circle")
-    .data(counties.features)
-    .join(
-      function (enter) {
-        return enter
-          .append("circle")
-          .classed("bubble", true)
-          .attr(
-            "transform",
-            (c) => `translate(${projection(c.properties.center)})`
-          )
-          .transition()
-          .duration(TRANSITION_DURATION)
-          .attr("r", (c) => radius(c.properties.crashCount));
-      },
-      function (update) {
-        return update
-          .transition()
-          .duration(TRANSITION_DURATION)
-          .attr("r", (c) => radius(c.properties.crashCount));
-      }
-    );
+  const circles = svg.selectAll("circle").data(counties.features);
+
+  circles
+    .enter()
+    .append("circle")
+    .classed("bubble", true)
+    .attr("transform", (c) => `translate(${projection(c.properties.center)})`)
+    .transition()
+    .duration(TRANSITION_DURATION)
+    .attr("r", (c) => radius(c.properties.crashCount));
+
+  circles
+    .transition()
+    .duration(TRANSITION_DURATION)
+    .attr("r", (c) => radius(c.properties.crashCount));
+}
+
+function initializeCountyCenters(counties) {
+  const path = d3.geoPath();
+  counties.features = counties.features.map((county) => {
+    county.properties.center = path.centroid(county);
+    return county;
+  });
 }
 
 function updateCounties(counties, data) {
@@ -73,9 +47,7 @@ function updateCounties(counties, data) {
     return bins;
   }, {});
 
-  const path = d3.geoPath();
   counties.features = counties.features.map((county) => {
-    county.properties.center = path.centroid(county);
     county.properties.crashCount = crashesPerCounty[county.id];
     return county;
   });
@@ -97,6 +69,7 @@ export default async function drawBubbleMap(data) {
   await drawUSA(svg, projection, us);
 
   const counties = topojson.feature(us, us.objects.counties);
+  initializeCountyCenters(counties);
   updateCounties(counties, data);
   updateMap(svg, projection, counties);
 

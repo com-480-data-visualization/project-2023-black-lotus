@@ -1,17 +1,12 @@
 import * as d3 from "d3";
 
-export default function bootstrapSpiral(data) {
-  const binsPerRing = 40;
-  let svg = d3.select("#ring");
-  const width = +svg.attr("width");
-  const height = +svg.attr("height");
-  svg = svg
-    .append("g")
-    .attr("transform", `translate(${width / 2}, ${height / 2})`);
+function drawSpiral(data, svg, width, height) {
+  const maxRadius = d3.min([width, height]) / 2 - 50;
 
-  const r = d3.min([width, height]) / 2 - 50;
-
-  const radius = d3.scaleLinear().domain([0, data.length]).range([r, 100]);
+  const radius = d3
+    .scaleLinear()
+    .domain([0, data.length])
+    .range([maxRadius, 100]);
 
   const numSpirals = 4;
   const angle = d3
@@ -33,12 +28,11 @@ export default function bootstrapSpiral(data) {
     .attr("d", radial(data));
 
   const maxCrashes = d3.max(data, (d) => d.value);
-  var spiralLength = spiral.node().getTotalLength(),
-    barWidth = spiralLength / data.length - 1;
+  const spiralLength = spiral.node().getTotalLength();
+  const barWidth = spiralLength / data.length - 1;
   const heightScale = d3.scaleLinear().domain([0, maxCrashes]).range([0, 50]);
 
   const years = [...new Set(data.map((d) => d.date.getFullYear()))];
-  console.log(years);
   const timeScale = d3.scaleLinear([0, data.length], [0, spiralLength]);
   const color = d3.scaleSequential(
     [d3.min(years), d3.max(years)],
@@ -53,9 +47,7 @@ export default function bootstrapSpiral(data) {
     .append("rect")
     .attr("class", "bar")
     .attr("x", function (d, i) {
-      // placement calculations
-
-      var linePer = timeScale(i + 1),
+      const linePer = timeScale(i + 1),
         posOnLine = spiral.node().getPointAtLength(linePer),
         angleOnLine = spiral.node().getPointAtLength(linePer - barWidth / 2);
 
@@ -71,11 +63,6 @@ export default function bootstrapSpiral(data) {
       return d.y;
     })
     .attr("width", function (d, i) {
-      // if (i < 14 * 12) {
-      //   return ((Math.sqrt(d.x * d.x + d.y * d.y) * 3) / 180) * Math.PI;
-      // }
-      // return ((Math.sqrt(d.x * d.x + d.y * d.y) * 3) / 180) * Math.PI;
-
       return barWidth;
     })
     .attr("rx", 2)
@@ -91,6 +78,10 @@ export default function bootstrapSpiral(data) {
     })
     .delay((d, i) => i * 10);
 
+  return svg.selectAll(".bar");
+}
+
+function drawLabel(svg) {
   const label = svg
     .append("text")
     .attr("text-anchor", "middle")
@@ -118,8 +109,42 @@ export default function bootstrapSpiral(data) {
     .attr("x", 0)
     .attr("y", 0)
     .attr("dy", "2.25em");
-  const bars = svg.selectAll(".bar");
-  console.log(bars);
+
+  return label;
+}
+
+function drawAxisTicks(svg, data, spacingFromDots = 10) {
+  const offset = 20;
+  const axisTicks = svg
+    .selectAll(".tick")
+    .data(data.filter((d) => d.date.getMonth() == 0))
+    .join("g")
+    .attr("class", "tick")
+    .attr("fill", "var(--color)")
+    .attr("font-size", "0.8rem")
+    .call((g) =>
+      g
+        .append("line")
+        .attr("stroke", "var(--color)")
+        .attr("stroke-width", 1)
+        .attr("stroke-dasharray", "1,1")
+        .attr("x1", (d) => d.x + spacingFromDots)
+        .attr("y1", (d) => d.y)
+        .attr("x2", (d) => d.x + spacingFromDots)
+        .attr("y2", (d) => d.y - offset)
+        .attr("transform", (d) => `rotate(${d.a},${d.x},${d.y})`)
+    );
+
+  axisTicks
+    .append("text")
+    .attr("dy", "1em")
+    .attr("x", (d, i) => d.x - spacingFromDots / 2)
+    .attr("y", (d, i) => d.y)
+    .attr("transform", (d, i) => `rotate(${d.a + 180},${d.x},${d.y})`)
+    .text((d) => "'" + `${d.date.getFullYear()}`.slice(2));
+}
+
+function addSpiralHoverEffects(bars, label) {
   bars
     .on("mouseleave", () => {
       bars.attr("fill-opacity", 1);
@@ -136,34 +161,18 @@ export default function bootstrapSpiral(data) {
         })}`
       );
     });
+}
 
-  //RENDER Ticks
-  const offset = 20;
-  const axisTicks = svg
-    .selectAll(".tick")
-    .data(data.filter((d) => d.date.getMonth() == 0))
-    .join("g")
-    .attr("class", "tick")
-    .attr("fill", "var(--color)")
-    .attr("font-size", "0.8rem")
-    .call((g) =>
-      g
-        .append("line")
-        .attr("stroke", "var(--color)")
-        .attr("stroke-width", 1)
-        .attr("stroke-dasharray", "1,1")
-        .attr("x1", (d) => d.x + barWidth)
-        .attr("y1", (d) => d.y)
-        .attr("x2", (d) => d.x + barWidth)
-        .attr("y2", (d) => d.y - offset)
-        .attr("transform", (d) => `rotate(${d.a},${d.x},${d.y})`)
-    );
+export default function bootstrapSpiral(data) {
+  const svg = d3.select("#ring");
+  const width = +svg.attr("width");
+  const height = +svg.attr("height");
+  const g = svg
+    .append("g")
+    .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
-  axisTicks
-    .append("text")
-    .attr("dy", "1em")
-    .attr("x", (d, i) => d.x - barWidth / 2)
-    .attr("y", (d, i) => d.y)
-    .attr("transform", (d, i) => `rotate(${d.a + 180},${d.x},${d.y})`)
-    .text((d) => "'" + `${d.date.getFullYear()}`.slice(2));
+  const label = drawLabel(g);
+  const bars = drawSpiral(data, g, width, height);
+  addSpiralHoverEffects(bars, label);
+  drawAxisTicks(g, data);
 }
