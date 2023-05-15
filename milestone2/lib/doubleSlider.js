@@ -1,29 +1,35 @@
 import "../assets/css/doubleSlider.css";
 
-export default function bootstrapYearDoubleSlider(...callbacks) {
+export default function bootstrapYearDoubleSlider(
+  defaultLeftValue,
+  defaultRightValue,
+  ...callbacks
+) {
   const range = document.querySelector(".range-selected");
   const rangeInput = document.querySelectorAll(".range-input input");
+  rangeInput[0].value = defaultLeftValue;
+  rangeInput[1].value = defaultRightValue;
   const minimumRangeSize = 1;
-  const start = 2001;
+  const start = +rangeInput[0].min;
   rangeInput.forEach((input) => {
     input.addEventListener("input", (event) => {
-      let minRange = +rangeInput[0].value;
-      let maxRange = +rangeInput[1].value;
-      if (maxRange - minRange < minimumRangeSize) {
+      let leftValue = +rangeInput[0].value;
+      let rightValue = +rangeInput[1].value;
+      if (rightValue - leftValue < minimumRangeSize) {
         if (event.target.className === "min") {
-          rangeInput[0].value = maxRange - minimumRangeSize;
-          minRange = +rangeInput[0].value;
+          rangeInput[0].value = rightValue - minimumRangeSize;
+          leftValue = +rangeInput[0].value;
         } else {
-          rangeInput[1].value = minRange + minimumRangeSize;
-          maxRange = +rangeInput[1].value;
+          rangeInput[1].value = leftValue + minimumRangeSize;
+          rightValue = +rangeInput[1].value;
         }
       }
       range.style.left =
-        ((minRange - start) / (rangeInput[0].max - start)) * 100 + "%";
+        ((leftValue - start) / (rangeInput[0].max - start)) * 100 + "%";
       range.style.right =
-        100 - ((maxRange - start) / (rangeInput[1].max - start)) * 100 + "%";
+        100 - ((rightValue - start) / (rangeInput[1].max - start)) * 100 + "%";
       callbacks.forEach((callback) => {
-        callback([minRange, maxRange]);
+        callback([leftValue, rightValue]);
       });
     });
   });
