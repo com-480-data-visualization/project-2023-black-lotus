@@ -7,6 +7,7 @@ import {
   loadDataLatLon,
   getCrashesPerMonth,
   flattenCrashesPerMonth,
+  loadAllData,
 } from "./lib/loadData";
 import "./lib/doubleSlider";
 import bootstrapYearDoubleSlider from "./lib/doubleSlider";
@@ -42,16 +43,16 @@ async function initializeBubbleMap() {
   const currentYearSpan = document.getElementById("current-year");
 }
 
-async function initializeSpiral() {
-  const flatCrashesPerMonth = flattenCrashesPerMonth(
-    await getCrashesPerMonth()
-  );
+async function initializeSpiral(data) {
+  const flatCrashesPerMonth = flattenCrashesPerMonth(getCrashesPerMonth(data));
   bootstrapSpiral(flatCrashesPerMonth);
 }
 
-async function initializeDocument() {
-  initializeSpiral();
+function initializeDocument() {
   initializeBubbleMap();
+  loadAllData().then((data) => {
+    initializeSpiral(data);
+  });
 }
 
 window.addEventListener("DOMContentLoaded", initializeDocument);
