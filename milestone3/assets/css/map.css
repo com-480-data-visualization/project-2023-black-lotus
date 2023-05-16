@@ -1,0 +1,28 @@
+.map-container svg {
+  width: 100%;
+  height: auto;
+}
+
+.map-filtering-container h3 {
+  margin-bottom: 0;
+}
+
+.bubble {
+  fill: var(--primary);
+  opacity: 0.5;
+  stroke: rgba(255, 255, 255, 0.8);
+  stroke-width: 0.5;
+}
+
+.state-line {
+  fill: none;
+  stroke: var(--background-color);
+  stroke-width: 0.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.state {
+  fill: var(--contrast);
+}

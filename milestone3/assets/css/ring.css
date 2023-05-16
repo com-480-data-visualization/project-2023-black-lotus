@@ -1,0 +1,36 @@
+.ring-container svg {
+  width: 100%;
+  height: auto;
+}
+
+.ring-text-container h3 {
+  margin-bottom: 1rem;
+}
+
+.circle-max {
+  fill: none;
+  stroke: var(--contrast);
+  stroke-width: 0.5;
+}
+
+.bar {
+  cursor: pointer;
+  transition: fill-opacity 0.3s;
+}
+
+.crash-count,
+.crash-time,
+.crash-text {
+  transition: fill-opacity 0.3s;
+}
+
+.crash-count {
+  fill: var(--h1-color);
+  font: 700 2rem var(--font-family);
+}
+
+.crash-time,
+.crash-text {
+  fill: var(--color);
+  font: var(--font-weight) var(--font-size) var(--font-family);
+}
