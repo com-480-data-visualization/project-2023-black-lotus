@@ -11,11 +11,10 @@ export async function loadDataLatLon() {
   return data;
 }
 
-export async function getCrashesPerMonth() {
-  const allData = await loadAllData();
+export function getCrashesPerMonth(data) {
   const startYear = 1982;
 
-  return allData.reduce((crashesPerMonth, crash) => {
+  return data.reduce((crashesPerMonth, crash) => {
     const crashYear = crash["Event.Year"];
     const crashMonth = crash["Event.Month"];
     if (crashYear >= startYear) {
