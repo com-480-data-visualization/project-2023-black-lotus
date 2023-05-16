@@ -1,35 +1,66 @@
 let fs = require("fs");
-let crashes = JSON.parse(
-  fs.readFileSync("..\\public\\data\\final_only_lat_lon.json")
-);
-let us = JSON.parse(
-  fs.readFileSync(
-    "..\\public\\data\\georef-united-states-of-america-county.geojson"
-  )
-);
+let crashes = JSON.parse(fs.readFileSync("..\\public\\data\\final_all.json"));
+console.log(crashes.length);
+let crashesPerAirlinePerState = {
+  Delta: {},
+  "American Airlines": {},
+  United: {},
+  Southwest: {},
+};
+crashesPerAirlinePerState = crashes.reduce((crashes, crash) => {
+  const state = crash["State"];
+  if (!crash["Air.carrier"]) {
+    return crashes;
+  }
 
-let newCrashes = crashes.map((crash) => {
-  let point = turf.point([crash.Longitude, crash.Latitude]);
-  for (let county of us.features) {
-    if (polygonContains(point, county)) {
-      crash.CountyCode = county.properties.coty_code[0];
-      return crash;
+  if (crash["Air.carrier"].includes("Delta")) {
+    if (!crashes["Delta"][state]) {
+      crashes["Delta"][state] = 1;
+    } else {
+      crashes["Delta"][state]++;
     }
   }
-});
-console.log(crashes.length);
-console.log(newCrashes.length);
 
-let newCrashesJSON = JSON.stringify(newCrashes);
+  if (crash["Air.carrier"].includes("American Airlines")) {
+    if (!crashes["American Airlines"][state]) {
+      crashes["American Airlines"][state] = 1;
+    } else {
+      crashes["American Airlines"][state]++;
+    }
+  }
+
+  if (crash["Air.carrier"].includes("United")) {
+    if (!crashes["United"][state]) {
+      crashes["United"][state] = 1;
+    } else {
+      crashes["United"][state]++;
+    }
+  }
+
+  if (
+    crash["Air.carrier"].includes("Southwest Airlines") &&
+    !crash["Air.carrier"].includes("Pacific Southwest Airlines")
+  ) {
+    if (!crashes["Southwest"][state]) {
+      crashes["Southwest"][state] = 1;
+    } else {
+      crashes["Southwest"][state]++;
+    }
+  }
+
+  return crashes;
+}, crashesPerAirlinePerState);
+
+let json = JSON.stringify(crashesPerAirlinePerState);
 fs.writeFile(
-  "..\\public\\data\\final_with_counties.json",
-  newCrashesJSON,
+  "..\\public\\data\\final_crashes_per_airline.json",
+  json,
   "utf-8",
   function (err) {
     if (err) {
       console.log(
         "An error occured while writing JSON to file: " +
-          "..\\public\\data\\final_with_counties.json"
+          "..\\public\\data\\final_crashes_per_airline.json"
       );
       return console.log(err);
     }
