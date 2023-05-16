@@ -4,11 +4,19 @@ export async function loadAllData() {
 
   return data;
 }
+
 export async function loadDataLatLon() {
   const response = await fetch("/data/final_with_counties.json");
   const data = await response.json();
 
   return data;
+}
+
+export async function getUSTopology() {
+  const response = await fetch("/data/counties-10m.json");
+  const us = await response.json();
+
+  return us;
 }
 
 export function getCrashesPerMonth(data) {
@@ -54,16 +62,9 @@ export function flattenCrashesPerMonth(crashesPerMonth) {
   return flatCrashesPerMonth;
 }
 
-export function getCrashesPerAirlinePerState(data) {
-  const crashesPerAirlinePerState = {
-    "Delta Air Lines": {},
-    "American Airlines Group": {},
-    "United Airlines Holdings": {},
-    "Southwest Airlines": {},
-    "FedEx Express": {},
-  };
+export async function getCrashesPerAirlinePerState() {
+  const response = await fetch("/data/final_crashes_per_airline.json");
+  const data = await response.json();
 
-  // data.reduce((crashes, crash) => {
-  //   if (crashes["Air.carrier"])
-  // })
+  return data;
 }

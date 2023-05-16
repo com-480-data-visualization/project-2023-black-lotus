@@ -5,7 +5,7 @@ let crashesPerAirlinePerState = {
   Delta: {},
   "American Airlines": {},
   United: {},
-  Southwest: {},
+  //Southwest: {},
 };
 crashesPerAirlinePerState = crashes.reduce((crashes, crash) => {
   const state = crash["State"];
@@ -37,16 +37,16 @@ crashesPerAirlinePerState = crashes.reduce((crashes, crash) => {
     }
   }
 
-  if (
-    crash["Air.carrier"].includes("Southwest Airlines") &&
-    !crash["Air.carrier"].includes("Pacific Southwest Airlines")
-  ) {
-    if (!crashes["Southwest"][state]) {
-      crashes["Southwest"][state] = 1;
-    } else {
-      crashes["Southwest"][state]++;
-    }
-  }
+  // if (
+  //   crash["Air.carrier"].includes("Southwest Airlines") &&
+  //   !crash["Air.carrier"].includes("Pacific Southwest Airlines")
+  // ) {
+  //   if (!crashes["Southwest"][state]) {
+  //     crashes["Southwest"][state] = 1;
+  //   } else {
+  //     crashes["Southwest"][state]++;
+  //   }
+  // }
 
   return crashes;
 }, crashesPerAirlinePerState);

@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import * as topojson from "topojson";
 
-export default async function drawUSA(svg, projection, us) {
+export default function drawUSA(svg, projection, us) {
   let path = d3.geoPath(projection);
   let statemesh = topojson.mesh(us, us.objects.states, (a, b) => a !== b);
   let nation = topojson.feature(us, us.objects.nation);

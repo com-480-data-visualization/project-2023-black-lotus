@@ -8,12 +8,15 @@ import {
   getCrashesPerMonth,
   flattenCrashesPerMonth,
   loadAllData,
+  getUSTopology,
+  getCrashesPerAirlinePerState,
 } from "./lib/loadData";
 import "./lib/doubleSlider";
 import bootstrapYearDoubleSlider from "./lib/doubleSlider";
 import bootstrapSpiral from "./charts/spiral";
+import drawAirlineMap from "./charts/airlines";
 
-async function initializeBubbleMap() {
+async function initializeBubbleMap(us) {
   let dataLatLon = await loadDataLatLon();
   dataLatLon = dataLatLon.filter((c) => !!c["Event.Year"]);
 
@@ -23,7 +26,8 @@ async function initializeBubbleMap() {
     dataLatLon.filter(
       (crash) =>
         +crash["Event.Year"] >= leftYear && +crash["Event.Year"] <= rightYear
-    )
+    ),
+    us
   );
   bootstrapYearDoubleSlider(
     leftYear,
@@ -48,11 +52,18 @@ async function initializeSpiral(data) {
   bootstrapSpiral(flatCrashesPerMonth);
 }
 
-function initializeDocument() {
-  initializeBubbleMap();
+async function initializeAirlineMap(us) {
+  const data = await getCrashesPerAirlinePerState();
+  await drawAirlineMap(data, us);
+}
+
+async function initializeDocument() {
+  const us = await getUSTopology();
+  initializeBubbleMap(us);
   loadAllData().then((data) => {
     initializeSpiral(data);
   });
+  initializeAirlineMap(us);
 }
 
 window.addEventListener("DOMContentLoaded", initializeDocument);
