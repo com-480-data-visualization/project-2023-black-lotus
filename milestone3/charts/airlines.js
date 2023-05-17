@@ -49,7 +49,6 @@ const STATE_CODE_TO_NAME = {
   OR: "Oregon",
   PW: "Palau",
   PA: "Pennsylvania",
-  PR: "Puerto Rico",
   RI: "Rhode Island",
   SC: "South Carolina",
   SD: "South Dakota",
@@ -108,7 +107,7 @@ export default async function drawAirlineMap(data, us) {
 
   let lastRectPositionX = 0;
   Object.keys(data).forEach((airline, i) => {
-    const amplifier = 1.4;
+    const amplifier = 1;
     const width = amplifier * totalCrashesPerAirline[airline];
 
     const height = 40;
@@ -136,41 +135,77 @@ export default async function drawAirlineMap(data, us) {
       .attr("y", 0)
       .text(airline);
     console.log(statesCenterMap);
-    let lastLinkX = positionX;
-    const dataForLines = Object.keys(data[airline])
+    const targets = Object.keys(data[airline])
       .filter((state) => state in STATE_CODE_TO_NAME)
       .map((state) => {
-        let link = {
-          line: {
-            source: [lastLinkX, height + positionY],
-            target: projection(
-              statesCenterMap[STATE_CODE_TO_NAME[state].toLowerCase()]
-            ),
-          },
-          width: data[airline][state] * amplifier,
+        return {
+          target: projection(
+            statesCenterMap[STATE_CODE_TO_NAME[state].toLowerCase()]
+          ),
+          state: state,
         };
-        lastLinkX += link.width;
-
-        return link;
       })
-      .filter((link) => link.line.target);
-    console.log(dataForLines);
+      .filter(({ state }) => {
+        if (
+          !state in STATE_CODE_TO_NAME ||
+          !STATE_CODE_TO_NAME[state].toLowerCase() in statesCenterMap
+        ) {
+          console.log(state);
+        }
+        return (
+          state in STATE_CODE_TO_NAME &&
+          STATE_CODE_TO_NAME[state].toLowerCase() in statesCenterMap
+        );
+      })
+      .sort((a, b) => {
+        return a.target[0] - b.target[0];
+      });
+    console.log(targets);
+    let lastLinkX = positionX;
+    const usedTargets = targets.map(() => false);
+    const dataForLines = targets.map(({ target, state }) => {
+      const sourceX = lastLinkX;
+      const sourceY = height + positionY;
 
+      const indexOfNextTarget = targets.reduce(
+        ({ minK, i }, { target }, index) => {
+          const k = (sourceX - target[0]) / (sourceY - target[1]);
+          if (k < minK && !usedTargets[index]) {
+            minK = k;
+            i = index;
+          }
+          return { minK, i };
+        },
+        { minK: 10000, i: -1 }
+      ).i;
+
+      usedTargets[indexOfNextTarget] = true;
+
+      let link = {
+        line: {
+          source: [sourceX, sourceY],
+          target: targets[indexOfNextTarget].target,
+        },
+        width: data[airline][state] * amplifier,
+      };
+      lastLinkX += link.width;
+
+      return link;
+    });
+    console.log(dataForLines);
     const links = svg.append("g");
     const line = d3.line();
     let d = dataForLines[0];
     console.log(line([d.line.source, d.line.target]));
 
-    svg
-      .selectAll("line")
+    const curve = d3.linkVertical();
+    links
+      .selectAll("path")
       .data(dataForLines)
-      .join("line")
-      .attr("x1", (d) => d.line.source[0])
-      .attr("x2", (d) => d.line.target[0])
-      .attr("y1", (d) => d.line.source[1])
-      .attr("y2", (d) => d.line.target[1])
+      .join("path")
+      .attr("d", (d) => curve(d.line))
       .attr("fill", "none")
-      .attr("stroke", "red")
+      .attr("stroke", "rgba(255,0,0,0.3)")
       .attr("stroke-width", (d) => d.width);
   });
 }
