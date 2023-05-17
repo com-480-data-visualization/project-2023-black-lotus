@@ -103,40 +103,14 @@ export default async function drawAirlineMap(data, us) {
     {}
   );
 
-  const maxCrashes = d3.max(Object.values(totalCrashesPerAirline));
-
   let lastRectPositionX = 0;
   Object.keys(data).forEach((airline, i) => {
     const amplifier = 1.5;
-    const width = amplifier * totalCrashesPerAirline[airline];
 
     const height = 40;
     const positionX = 20 + lastRectPositionX + (i + 1) * 20;
-    lastRectPositionX += width;
-
     const positionY = 80;
 
-    const g = svg
-      .append("g")
-      .attr("transform", `translate(${positionX}, ${positionY})`);
-
-    g.append("rect")
-      .attr("x", 0)
-      .attr("y", 0)
-      .attr("width", width)
-      .attr("height", height)
-      .attr("fill", "rgba(255,0,0,0.3)");
-
-    g.append("text")
-      .attr("text-anchor", "middle")
-      .attr("transform", `translate(${width / 2}, ${height / 2})`)
-      .attr("fill", "#888")
-      .attr("dy", "0.35em")
-      .attr("x", 0)
-      .attr("y", 0)
-      .text(airline);
-
-    console.log(statesCenterMap);
     const targets = Object.keys(data[airline])
       .filter((state) => state in STATE_CODE_TO_NAME)
       .map((state) => {
@@ -162,11 +136,8 @@ export default async function drawAirlineMap(data, us) {
       .sort((a, b) => {
         return a.target[0] - b.target[0];
       });
-    console.log(targets);
 
     let lastLinkX = positionX;
-    let lastLinkWidth = 0;
-    let linkWidths = 0;
     const usedTargets = targets.map(() => false);
     const dataForLines = targets.map(({ target, state }) => {
       const width = data[airline][state] * amplifier;
@@ -199,10 +170,6 @@ export default async function drawAirlineMap(data, us) {
     });
 
     const links = svg.append("g");
-    const firstWidth = dataForLines[0].width;
-    const lastWidth = dataForLines[dataForLines.length - 1].width;
-
-    console.log(dataForLines);
 
     const curve = d3.linkVertical();
     links
@@ -213,5 +180,28 @@ export default async function drawAirlineMap(data, us) {
       .attr("fill", "none")
       .attr("stroke", "rgba(255,0,0,0.3)")
       .attr("stroke-width", (d) => d.width);
+
+    const g = svg
+      .append("g")
+      .attr("transform", `translate(${positionX}, ${positionY})`);
+
+    const width = dataForLines.reduce((w, d) => w + d.width, 0);
+
+    g.append("rect")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("width", width)
+      .attr("height", height)
+      .attr("fill", "rgba(255,0,0,0.3)");
+
+    g.append("text")
+      .attr("text-anchor", "middle")
+      .attr("transform", `translate(${width / 2}, ${height / 2})`)
+      .attr("fill", "#888")
+      .attr("dy", "0.35em")
+      .attr("x", 0)
+      .attr("y", 0)
+      .text(airline);
+    lastRectPositionX += width;
   });
 }
