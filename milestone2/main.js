@@ -49,7 +49,7 @@ async function initializeSpiral(data) {
 }
 
 async function initializeDocument() {
-  const data = loadAllData();
+  const data = await loadAllData();
   initializeSpiral(data);
   initializeBubbleMap();
 }

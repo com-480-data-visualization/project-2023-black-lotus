@@ -107,7 +107,7 @@ export default async function drawAirlineMap(data, us) {
 
   let lastRectPositionX = 0;
   Object.keys(data).forEach((airline, i) => {
-    const amplifier = 1;
+    const amplifier = 1.5;
     const width = amplifier * totalCrashesPerAirline[airline];
 
     const height = 40;
@@ -125,7 +125,7 @@ export default async function drawAirlineMap(data, us) {
       .attr("y", 0)
       .attr("width", width)
       .attr("height", height)
-      .attr("fill", "blue");
+      .attr("fill", "rgba(255,0,0,0.3)");
 
     g.append("text")
       .attr("text-anchor", "middle")
