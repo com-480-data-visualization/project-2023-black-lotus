@@ -115,6 +115,7 @@ export default async function drawAirlineMap(data, us) {
     lastRectPositionX += width;
 
     const positionY = 80;
+
     const g = svg
       .append("g")
       .attr("transform", `translate(${positionX}, ${positionY})`);
@@ -134,6 +135,7 @@ export default async function drawAirlineMap(data, us) {
       .attr("x", 0)
       .attr("y", 0)
       .text(airline);
+
     console.log(statesCenterMap);
     const targets = Object.keys(data[airline])
       .filter((state) => state in STATE_CODE_TO_NAME)
@@ -161,10 +163,14 @@ export default async function drawAirlineMap(data, us) {
         return a.target[0] - b.target[0];
       });
     console.log(targets);
+
     let lastLinkX = positionX;
+    let lastLinkWidth = 0;
+    let linkWidths = 0;
     const usedTargets = targets.map(() => false);
     const dataForLines = targets.map(({ target, state }) => {
-      const sourceX = lastLinkX;
+      const width = data[airline][state] * amplifier;
+      const sourceX = lastLinkX + width / 2;
       const sourceY = height + positionY;
 
       const indexOfNextTarget = targets.reduce(
@@ -186,17 +192,17 @@ export default async function drawAirlineMap(data, us) {
           source: [sourceX, sourceY],
           target: targets[indexOfNextTarget].target,
         },
-        width: data[airline][state] * amplifier,
+        width: width,
       };
       lastLinkX += link.width;
-
       return link;
     });
-    console.log(dataForLines);
+
     const links = svg.append("g");
-    const line = d3.line();
-    let d = dataForLines[0];
-    console.log(line([d.line.source, d.line.target]));
+    const firstWidth = dataForLines[0].width;
+    const lastWidth = dataForLines[dataForLines.length - 1].width;
+
+    console.log(dataForLines);
 
     const curve = d3.linkVertical();
     links
