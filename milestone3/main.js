@@ -54,7 +54,29 @@ async function initializeSpiral(data) {
 
 async function initializeAirlineMap(us) {
   const data = await getCrashesPerAirlinePerState();
-  await drawAirlineMap(data, us);
+
+  console.log(data);
+  const airlineSelect = document.getElementById("airline-select");
+  let defaultAirline = "";
+  Object.keys(data).forEach((airline, i) => {
+    let airlineOption = document.createElement("option");
+    if (i == 0) {
+      airlineOption.selected = true;
+      defaultAirline = airline;
+    }
+    airlineOption.value = airline;
+    airlineOption.innerHTML = airline;
+    airlineSelect.appendChild(airlineOption);
+  });
+
+  const updateAirlineMap = drawAirlineMap(
+    data[defaultAirline],
+    us,
+    defaultAirline
+  );
+  airlineSelect.addEventListener("change", (event) =>
+    updateAirlineMap(data[event.target.value], event.target.value)
+  );
 }
 
 async function initializeDocument() {
