@@ -75,6 +75,7 @@ function initializeStateCenters(states) {
 function updateAirlineMap(data, airline, svg, projection, statesCenterMap) {
   const width = +svg.attr("width");
   const amplifier = 2;
+  const pad = 0;
 
   const rectHeight = 10;
   let rectWidth = Object.values(data).reduce(
@@ -118,8 +119,10 @@ function updateAirlineMap(data, airline, svg, projection, statesCenterMap) {
     const sourceY = rectHeight + positionY;
 
     const indexOfNextTarget = targets.reduce(
-      ({ minK, i }, { target }, index) => {
-        const k = (sourceX - target[0]) / (sourceY - target[1]);
+      ({ minK, i }, { target, state }, index) => {
+        const k =
+          (lastLinkX + (data[state] * amplifier) / 2 - target[0]) /
+          (sourceY - target[1]);
         if (k < minK && !usedTargets[index]) {
           minK = k;
           i = index;
@@ -133,12 +136,15 @@ function updateAirlineMap(data, airline, svg, projection, statesCenterMap) {
 
     let link = {
       line: {
-        source: [sourceX, sourceY],
+        source: [
+          lastLinkX + (data[targets[indexOfNextTarget].state] * amplifier) / 2,
+          sourceY,
+        ],
         target: targets[indexOfNextTarget].target,
       },
-      width: width,
+      width: data[targets[indexOfNextTarget].state],
     };
-    lastLinkX += link.width;
+    lastLinkX += link.width * amplifier;
     return link;
   });
 
@@ -152,7 +158,7 @@ function updateAirlineMap(data, airline, svg, projection, statesCenterMap) {
     .attr("d", (d) => curve(d.line))
     .attr("fill", "none")
     .attr("stroke", "rgba(255,0,0,0.3)")
-    .attr("stroke-width", (d) => d.width);
+    .attr("stroke-width", (d) => d.width * (amplifier - pad));
 
   const g = svg
     .selectAll(".airline-rect")
@@ -161,7 +167,10 @@ function updateAirlineMap(data, airline, svg, projection, statesCenterMap) {
     .attr("class", "airline-rect")
     .attr("transform", `translate(${positionX}, ${positionY})`);
 
-  rectWidth = dataForLines.reduce((width, line) => width + line.width, 0);
+  rectWidth = dataForLines.reduce(
+    (width, line) => width + line.width * amplifier,
+    0
+  );
   g.selectAll("rect")
     .data([airline])
     .join("rect")
