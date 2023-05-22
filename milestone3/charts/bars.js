@@ -1,43 +1,45 @@
 import * as d3 from "d3";
 
-function bars(svg, prev, next, x, y, bar_count) {
-  let bar = svg.append("g").attr("fill-opacity", 0.6).selectAll("rect");
-  return ([_, data], transition) =>
-    (bar = bar
-      .data(data.slice(0, bar_count), (d) => d.model)
-      .join(
-        (enter) =>
-          enter
-            .append("rect")
-            .attr("fill", "green")
-            .attr("height", y.bandwidth())
-            .attr("x", x(0))
-            .attr("y", (d) => y((prev.get(d) || d).rank))
-            .attr("width", (d) => x((prev.get(d) || d).value) - x(0)),
-        (update) => update,
-        (exit) =>
-          exit
-            .transition(transition)
-            .remove()
-            .attr("y", (d) => y((next.get(d) || d).rank))
-            .attr("width", (d) => x((next.get(d) || d).value) - x(0))
-      )
-      .call((bar) =>
-        bar
-          .transition(transition)
-          .attr("y", (d) => y(d.rank))
-          .attr("width", (d) => x(d.value) - x(0))
-      ));
+function bars(svg, prev, next, x, y, barCount) {
+  let g = svg.append("g").attr("fill-opacity", 0.6);
+  return ([_, bars], transition) => {
+    let barSelection = g
+      .selectAll("rect")
+      .data(bars.slice(0, barCount), (d) => d.model);
+
+    barSelection
+      .enter()
+      .append("rect")
+      .attr("fill", "green")
+      .attr("height", y.bandwidth())
+      .attr("x", x(0))
+      .attr("y", (d) => y((prev.get(d) || d).rank))
+      .attr("width", (d) => x((prev.get(d) || d).value) - x(0));
+
+    barSelection
+      .exit()
+      .transition(transition)
+      .remove()
+      .attr("y", (d) => y((next.get(d) || d).rank))
+      .attr("width", (d) => x((next.get(d) || d).value) - x(0));
+
+    barSelection.call((bar) =>
+      bar
+        .transition(transition)
+        .attr("y", (d) => y(d.rank))
+        .attr("width", (d) => x(d.value) - x(0))
+    );
+  };
 }
 
-function ticker(svg, bar_size, bar_count, width, margin) {
+function ticker(svg, barSize, barCount, width, margin) {
   const now = svg
     .append("text")
-    .style("font", `bold ${bar_size}px var(--sans-serif)`)
+    .style("font", `bold ${barSize}px var(--sans-serif)`)
     .style("font-variant-numeric", "tabular-nums")
     .attr("text-anchor", "end")
     .attr("x", width - 6)
-    .attr("y", margin.top + bar_size * (bar_count - 0.45))
+    .attr("y", margin.top + barSize * (barCount - 0.45))
     .attr("dy", "0.32em")
     .text(1982);
 
@@ -53,82 +55,78 @@ function textTween(a, b) {
   };
 }
 
-function labels(svg, bar_count, x, y, prev, next) {
-  let label = svg
+function labels(svg, barCount, x, y, prev, next) {
+  let g = svg
     .append("g")
     .style("font", "bold 12px var(--sans-serif)")
     .style("font-variant-numeric", "tabular-nums")
-    .attr("text-anchor", "end")
-    .selectAll("text");
+    .attr("text-anchor", "end");
 
-  return ([date, data], transition) =>
-    (label = label
-      .data(data.slice(0, bar_count), (d) => d.model)
-      .join(
-        (enter) =>
-          enter
-            .append("text")
-            .attr(
-              "transform",
-              (d) =>
-                `translate(${x((prev.get(d) || d).value)},${y(
-                  (prev.get(d) || d).rank
-                )})`
-            )
-            .attr("y", y.bandwidth() / 2)
-            .attr("x", -6)
-            .attr("dy", "-0.25em")
-            .text((d) => d.model)
-            .call((text) =>
-              text
-                .append("tspan")
-                .attr("fill-opacity", 0.7)
-                .attr("font-weight", "normal")
-                .attr("x", -6)
-                .attr("dy", "1.15em")
-            ),
-        (update) => update,
-        (exit) =>
-          exit
-            .transition(transition)
-            .remove()
-            .attr(
-              "transform",
-              (d) =>
-                `translate(${x((next.get(d) || d).value)},${y(
-                  (next.get(d) || d).rank
-                )})`
-            )
-            .call((g) =>
-              g
-                .select("tspan")
-                .tween("text", (d) =>
-                  textTween(d.value, (next.get(d) || d).value)
-                )
-            )
+  return ([_, data], transition) => {
+    let labelJoin = g
+      .selectAll("text")
+      .data(data.slice(0, barCount), (d) => d.model);
+    labelJoin
+      .enter()
+      .append("text")
+      .attr(
+        "transform",
+        (d) =>
+          `translate(${x((prev.get(d) || d).value)},${y(
+            (prev.get(d) || d).rank
+          )})`
       )
-      .call((bar) =>
-        bar
-          .transition(transition)
-          .attr("transform", (d) => `translate(${x(d.value)},${y(d.rank)})`)
-          .call((g) =>
-            g
-              .select("tspan")
-              .tween("text", (d) =>
-                textTween((prev.get(d) || d).value, d.value)
-              )
-          )
-      ));
+      .attr("y", y.bandwidth() / 2)
+      .attr("x", -6)
+      .attr("dy", "-0.25em")
+      .text((d) => d.model)
+      .call((text) =>
+        text
+          .append("tspan")
+          .attr("fill-opacity", 0.7)
+          .attr("font-weight", "normal")
+          .attr("x", -6)
+          .attr("dy", "1.15em")
+      );
+
+    labelJoin
+      .exit()
+      .transition(transition)
+      .remove()
+      .attr(
+        "transform",
+        (d) =>
+          `translate(${x((next.get(d) || d).value)},${y(
+            (next.get(d) || d).rank
+          )})`
+      )
+      .call((g) =>
+        g
+          .select("tspan")
+          .tween("text", (d) => textTween(d.value, (next.get(d) || d).value))
+      );
+
+    labelJoin.call((bar) =>
+      bar
+        .transition(transition)
+        .attr("transform", (d) => `translate(${x(d.value)},${y(d.rank)})`)
+        .call((g) =>
+          g
+            .select("tspan")
+            .tween("text", (d) => textTween((prev.get(d) || d).value, d.value))
+        )
+    );
+  };
 }
 
-function axis(svg, bar_size, bar_count, x, y, margin, width) {
+function axis(svg, barSize, barCount, x, y, margin, width) {
   const g = svg.append("g").attr("transform", `translate(0,${margin.top})`);
 
   const axis = d3
     .axisTop(x)
-    .ticks(width / 160)
+    .ticks(width / 120)
     .tickSizeOuter(0)
-    .tickSizeInner(-bar_size * (bar_count + y.padding()));
+    .tickSizeInner(-barSize * (barCount + y.padding()));
 
   return (_, transition) => {
     g.transition(transition).call(axis);
@@ -138,106 +136,99 @@ function axis(svg, bar_size, bar_count, x, y, margin, width) {
   };
 }
 
-function add_rank(cur, n) {
-  //console.log(cur.sort((a, b) => b.value - a.value));
-
+function addRank(cur, barCount) {
   return cur
     .sort((a, b) => b.value - a.value)
     .map((x, index) => {
-      return { model: x.model, value: x.value, rank: Math.min(index, n) };
+      return {
+        model: x.model,
+        value: x.value,
+        rank: Math.min(index, barCount),
+      };
     });
 }
 
 export default async function bootstrapBars(data) {
   const models = Object.keys(data);
-  //return;
   const svg = d3.select("#bars");
   const width = +svg.attr("width");
   const height = +svg.attr("height");
-  const g = svg
-    .append("g")
-    .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
-  const bar_count = 10;
-  const duration = 50;
-  const frame_count = 10;
-  const startYear = 1982;
-  const endYear = 2022;
-  let full_data = [];
-  for (let year = startYear; year <= endYear; year++) {
-    for (let i = 0; i < frame_count; i++) {
-      if (year == endYear) {
-        //console.log("start");
-        let cur = [];
-        for (let it = 0; it < models.length; it++) {
-          let model = models[it];
-          cur.push({ model: model, value: data[model][year].crashes });
-        }
-        full_data.push([{ year: year }, add_rank(cur, bar_count)]);
-        break;
-      } else {
-        //console.log("okt");
-        //console.log(models);
-        let cur = [];
-        for (let it = 0; it < models.length; it++) {
-          let model = models[it];
-          //console.log(model);
-          //console.log(data[model][year]);
-          //console.log(data[model][year + 1]);
-          cur.push({
+  const BAR_COUNT = 10;
+  const DURATION = 50;
+  const FRAME_COUNT = 10;
+  const START_YEAR = 1982;
+  const END_YEAR = 2022;
+  const PADDING = 0.1;
+  const MARGIN = { top: 16, right: 6, bottom: 6, left: 0 };
+
+  let timepoints = [];
+  for (let year = START_YEAR; year <= END_YEAR; year++) {
+    for (let i = 0; i < FRAME_COUNT; i++) {
+      let currentCrashesForModel = [];
+      if (year == END_YEAR) {
+        for (let model of models) {
+          currentCrashesForModel.push({
             model: model,
-            value:
-              ((frame_count - i) * data[model][year].crashes +
-                i * data[model][year + 1].crashes) /
-              frame_count,
+            value: data[model][year].count,
           });
         }
-        full_data.push([{ year: year }, add_rank(cur, bar_count)]);
-        //console.log("okt");
+        timepoints.push([
+          { year: year },
+          addRank(currentCrashesForModel, BAR_COUNT),
+        ]);
+        break;
+      } else {
+        for (let model of models) {
+          currentCrashesForModel.push({
+            model: model,
+            value:
+              ((FRAME_COUNT - i) * data[model][year].count +
+                i * data[model][year + 1].count) /
+              FRAME_COUNT,
+          });
+        }
+        timepoints.push([
+          { year: year },
+          addRank(currentCrashesForModel, BAR_COUNT),
+        ]);
       }
     }
   }
-  //console.log("OK");
 
-  let name_frames = d3.groups(
-    full_data.flatMap(([, data]) => data),
+  let nameFrames = d3.groups(
+    timepoints.flatMap(([, data]) => data),
     (d) => d.model
   );
-  let prev = new Map(
-    name_frames.flatMap(([, data]) => d3.pairs(data, (a, b) => [b, a]))
+  let previous = new Map(
+    nameFrames.flatMap(([, data]) => d3.pairs(data, (a, b) => [b, a]))
   );
-  let next = new Map(name_frames.flatMap(([, data]) => d3.pairs(data)));
-  //console.log(prev);
-  //console.log(next);
-  //console.log(width);
-  let margin = { top: 16, right: 6, bottom: 6, left: 0 };
-  let x = d3.scaleLinear([0, 1], [margin.left, width - margin.right]);
-  //console.log(x);
-  let bar_size = (height - margin.top - margin.bottom) / (bar_count + 1);
+  let next = new Map(nameFrames.flatMap(([, data]) => d3.pairs(data)));
+  let x = d3.scaleLinear([0, 1], [MARGIN.left, width - MARGIN.right]);
+
+  let barHeight = (height - MARGIN.top - MARGIN.bottom) / (BAR_COUNT + 1);
   let y = d3
     .scaleBand()
-    .domain(d3.range(bar_count + 1))
-    .rangeRound([margin.top, margin.top + bar_size * (bar_count + 1 + 0.1)])
-    .padding(0.1);
-  //console.log(y);
-  //console.log("Nani");
+    .domain(d3.range(BAR_COUNT + 1))
+    .rangeRound([
+      MARGIN.top,
+      MARGIN.top + barHeight * (BAR_COUNT + 1 + PADDING),
+    ])
+    .padding(PADDING);
 
-  const updateBars = bars(svg, prev, next, x, y, bar_count);
-  const updateAxis = axis(svg, bar_size, bar_count, x, y, margin, width);
-  const updateLabels = labels(svg, bar_count, x, y, prev, next);
-  const updateTicker = ticker(svg, bar_size, bar_count, width, margin);
+  const updateBars = bars(svg, previous, next, x, y, BAR_COUNT);
+  const updateAxis = axis(svg, barHeight, BAR_COUNT, x, y, MARGIN, width);
+  const updateLabels = labels(svg, BAR_COUNT, x, y, previous, next);
+  const updateTicker = ticker(svg, barHeight, BAR_COUNT, width, MARGIN);
 
-  console.log(full_data);
+  for (const timepoint of timepoints) {
+    const transition = svg.transition().duration(DURATION).ease(d3.easeLinear);
 
-  for (const keyframe of full_data) {
-    const transition = svg.transition().duration(duration).ease(d3.easeLinear);
-
-    // Extract the top bar’s value.
-    x.domain([0, keyframe[1][0].value]);
-    updateAxis(keyframe, transition);
-    updateBars(keyframe, transition);
-    updateLabels(keyframe, transition);
-    updateTicker(keyframe, transition);
+    x.domain([0, timepoint[1][0].value]);
+    updateAxis(timepoint, transition);
+    updateBars(timepoint, transition);
+    updateLabels(timepoint, transition);
+    updateTicker(timepoint, transition);
 
     await transition.end();
   }

@@ -82,9 +82,7 @@ async function initializeAirlineMap(us) {
 }
 
 async function initializeBars(data) {
-  console.log("Init");
-  const crashesPerModel = getCrashesPerModel(data);
-  console.log("Loaded");
+  const crashesPerModel = getCrashesPerModel(data, "piper", false);
   bootstrapBars(crashesPerModel);
 }
 
