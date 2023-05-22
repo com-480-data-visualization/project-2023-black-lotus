@@ -45,3 +45,8 @@
     grid-column: 1 / 2;
   }
 }
+
+.btns {
+  width: 200px;
+  margin: 0 auto;
+  display: inline;}

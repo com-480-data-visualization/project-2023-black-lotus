@@ -6,6 +6,7 @@ import "./assets/css/layout.css";
 import {
   loadDataLatLon,
   getCrashesPerMonth,
+  getCrashesPerModel,
   flattenCrashesPerMonth,
   loadAllData,
   getUSTopology,
@@ -14,6 +15,7 @@ import {
 import "./lib/doubleSlider";
 import bootstrapYearDoubleSlider from "./lib/doubleSlider";
 import bootstrapSpiral from "./charts/spiral";
+import bootstrapBars from "./charts/bars";
 import drawAirlineMap from "./charts/airlines";
 
 async function initializeBubbleMap(us) {
@@ -79,6 +81,13 @@ async function initializeAirlineMap(us) {
   );
 }
 
+async function initializeBars(data) {
+  console.log("Init");
+  const crashesPerModel = getCrashesPerModel(data);
+  console.log("Loaded");
+  bootstrapBars(crashesPerModel);
+}
+
 async function initializeDocument() {
   const us = await getUSTopology();
   initializeBubbleMap(us);
@@ -86,6 +95,10 @@ async function initializeDocument() {
     initializeSpiral(data);
   });
   initializeAirlineMap(us);
+  console.log("Here");
+  loadAllData().then((data) => {
+    initializeBars(data);
+  });
 }
 
 window.addEventListener("DOMContentLoaded", initializeDocument);
