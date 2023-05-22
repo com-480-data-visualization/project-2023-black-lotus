@@ -13,7 +13,7 @@
   stroke-width: 0.5;
 }
 
-.bar {
+.ring-bar {
   cursor: pointer;
   transition: fill-opacity 0.3s;
 }

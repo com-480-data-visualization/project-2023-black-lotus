@@ -45,7 +45,7 @@ function drawSpiral(data, svg, width, height) {
     .data(data)
     .enter()
     .append("rect")
-    .attr("class", "bar")
+    .attr("class", "ring-bar")
     .attr("x", function (d, i) {
       const linePer = timeScale(i + 1),
         posOnLine = spiral.node().getPointAtLength(linePer),
@@ -78,7 +78,7 @@ function drawSpiral(data, svg, width, height) {
     })
     .delay((d, i) => i * 10);
 
-  return svg.selectAll(".bar");
+  return svg.selectAll(".ring-bar");
 }
 
 function drawLabel(svg) {
