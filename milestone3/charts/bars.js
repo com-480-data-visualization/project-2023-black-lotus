@@ -1,7 +1,8 @@
 import * as d3 from "d3";
+import "../assets/css/bars.css";
 
 function bars(svg, prev, next, x, y, barCount) {
-  let g = svg.append("g").attr("fill-opacity", 0.6);
+  let g = svg.append("g");
   return ([_, bars], transition) => {
     let barSelection = g
       .selectAll("rect")
@@ -10,7 +11,7 @@ function bars(svg, prev, next, x, y, barCount) {
     barSelection
       .enter()
       .append("rect")
-      .attr("fill", "green")
+      .attr("class", "bar")
       .attr("height", y.bandwidth())
       .attr("x", x(0))
       .attr("y", (d) => y((prev.get(d) || d).rank))
@@ -35,8 +36,7 @@ function bars(svg, prev, next, x, y, barCount) {
 function ticker(svg, barSize, barCount, width, margin) {
   const now = svg
     .append("text")
-    .style("font", `bold ${barSize}px var(--sans-serif)`)
-    .style("font-variant-numeric", "tabular-nums")
+    .attr("class", "year")
     .attr("text-anchor", "end")
     .attr("x", width - 6)
     .attr("y", margin.top + barSize * (barCount - 0.45))
@@ -56,11 +56,7 @@ function textTween(a, b) {
 }
 
 function labels(svg, barCount, x, y, prev, next) {
-  let g = svg
-    .append("g")
-    .style("font", "bold 12px var(--sans-serif)")
-    .style("font-variant-numeric", "tabular-nums")
-    .attr("text-anchor", "end");
+  let g = svg.append("g").attr("class", "bar-text").attr("text-anchor", "end");
 
   return ([_, data], transition) => {
     let labelJoin = g
@@ -83,8 +79,7 @@ function labels(svg, barCount, x, y, prev, next) {
       .call((text) =>
         text
           .append("tspan")
-          .attr("fill-opacity", 0.7)
-          .attr("font-weight", "normal")
+          .attr("class", "text-value")
           .attr("x", -6)
           .attr("dy", "1.15em")
       );
@@ -131,7 +126,7 @@ function axis(svg, barSize, barCount, x, y, margin, width) {
   return (_, transition) => {
     g.transition(transition).call(axis);
     g.select(".tick:first-of-type text").remove();
-    g.selectAll(".tick:not(:first-of-type) line").attr("stroke", "white");
+    g.selectAll(".tick:not(:first-of-type) line").attr("class", "axis");
     g.select(".domain").remove();
   };
 }

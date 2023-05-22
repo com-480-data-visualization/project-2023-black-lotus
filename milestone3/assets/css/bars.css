@@ -1,0 +1,23 @@
+.bar {
+  fill: var(--primary);
+  fill-opacity: 1;
+}
+
+.year {
+  fill: var(--contrast);
+  font: 700 var(--font-size) var(--font-family);
+}
+
+.bar-text {
+  fill: white;
+  font: 700 var(--font-size) var(--font-family);
+}
+
+.text-value {
+  fill: white;
+  font: var(--font-weight) var(--font-size) var(--font-family);
+}
+
+.axis {
+  stroke: var(--contrast);
+}
