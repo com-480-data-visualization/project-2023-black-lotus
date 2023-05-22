@@ -31,6 +31,10 @@ async function initializeBubbleMap(us) {
     ),
     us
   );
+
+  const currentYearSpan = document.getElementById("current-year");
+
+  const phaseSelect = document.getElementById("phase-select");
   bootstrapYearDoubleSlider(
     leftYear,
     rightYear,
@@ -39,14 +43,50 @@ async function initializeBubbleMap(us) {
     },
     ([min, max]) => {
       updateMap(
-        dataLatLon.filter(
-          (crash) => crash["Event.Year"] >= min && crash["Event.Year"] <= max
-        )
+        dataLatLon
+          .filter(
+            (crash) => crash["Event.Year"] >= min && crash["Event.Year"] <= max
+          )
+          .filter((crash) =>
+            phaseSelect.value === "Any"
+              ? true
+              : (crash["Flight.phase"] ?? [""]).includes(
+                  phaseSelect.value.toLowerCase()
+                )
+          )
       );
     }
   );
+  let defaultPhase = "";
+  ["Any", "Takeoff", "Cruise", "Landing", "Taxi"].forEach((phase, i) => {
+    let phaseOption = document.createElement("option");
+    if (i == 0) {
+      phaseOption.selected = true;
+      defaultPhase = phase;
+    }
+    phaseOption.value = phase;
+    phaseOption.innerHTML = phase;
+    phaseSelect.appendChild(phaseOption);
+  });
 
-  const currentYearSpan = document.getElementById("current-year");
+  phaseSelect.addEventListener("change", (event) => {
+    const rangeInput = document.querySelectorAll(".range-input input");
+    const min = document.querySelectorAll(".range-input input")[0].value;
+    const max = document.querySelectorAll(".range-input input")[1].value;
+    updateMap(
+      dataLatLon
+        .filter(
+          (crash) => crash["Event.Year"] >= min && crash["Event.Year"] <= max
+        )
+        .filter((crash) =>
+          event.target.value === "Any"
+            ? true
+            : (crash["Flight.phase"] ?? [""]).includes(
+                event.target.value.toLowerCase()
+              )
+        )
+    );
+  });
 }
 
 async function initializeSpiral(data) {
@@ -93,7 +133,6 @@ async function initializeDocument() {
     initializeSpiral(data);
   });
   initializeAirlineMap(us);
-  console.log("Here");
   loadAllData().then((data) => {
     initializeBars(data);
   });
