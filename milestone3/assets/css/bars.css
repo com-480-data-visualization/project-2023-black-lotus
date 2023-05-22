@@ -8,7 +8,7 @@
   fill-opacity: 1;
 }
 
-.year {
+.bar-year {
   fill: var(--contrast);
   font: 700 var(--font-size) var(--font-family);
 }
@@ -18,11 +18,11 @@
   font: 700 var(--font-size) var(--font-family);
 }
 
-.text-value {
+.bar-text-value {
   fill: white;
   font: var(--font-weight) var(--font-size) var(--font-family);
 }
 
-.axis {
+.bar-axis {
   stroke: var(--contrast);
 }

@@ -157,8 +157,6 @@ function updateAirlineMap(data, airline, svg, projection, statesCenterMap) {
     .transition()
     .attr("class", "link")
     .attr("d", (d) => curve(d.line))
-    .attr("fill", "none")
-    .attr("stroke", "rgba(255,0,0,0.3)")
     .attr("stroke-width", (d) => d.width * (amplifier - pad));
 
   const g = svg
@@ -178,17 +176,17 @@ function updateAirlineMap(data, airline, svg, projection, statesCenterMap) {
     .transition()
     .attr("x", 0)
     .attr("y", 0)
+    .attr("class", "airline-rect")
     .attr("width", rectWidth)
-    .attr("height", rectHeight)
-    .attr("fill", "rgba(255,0,0,0.3)");
+    .attr("height", rectHeight);
 
   g.selectAll("text")
     .data([airline])
     .join("text")
     .transition()
+    .attr("class", "airline-text")
     .attr("text-anchor", "middle")
     .attr("transform", `translate(${rectWidth / 2}, -${(rectHeight / 2) * 3})`)
-    .attr("fill", "#888")
     .attr("dy", "0.35em")
     .attr("x", 0)
     .attr("y", 0)

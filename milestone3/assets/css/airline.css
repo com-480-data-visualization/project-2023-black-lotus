@@ -2,3 +2,20 @@
   width: 100%;
   height: auto;
 }
+
+.link {
+  fill: none;
+  stroke: var(--primary);
+  stroke-opacity: 0.3;
+}
+
+.airline-rect {
+  fill: var(--primary);
+  fill-opacity: 0.3;
+}
+
+.airline-text {
+  fill: var(--color);
+  font-weight: 700;
+  fill-opacity: 1;
+}

@@ -36,7 +36,7 @@ function bars(svg, prev, next, x, y, barCount) {
 function ticker(svg, barSize, barCount, width, margin) {
   const now = svg
     .append("text")
-    .attr("class", "year")
+    .attr("class", "bar-year")
     .attr("text-anchor", "end")
     .attr("x", width - 6)
     .attr("y", margin.top + barSize * (barCount - 0.45))
@@ -79,7 +79,7 @@ function labels(svg, barCount, x, y, prev, next) {
       .call((text) =>
         text
           .append("tspan")
-          .attr("class", "text-value")
+          .attr("class", "bar-text-value")
           .attr("x", -6)
           .attr("dy", "1.15em")
       );
@@ -126,7 +126,7 @@ function axis(svg, barSize, barCount, x, y, margin, width) {
   return (_, transition) => {
     g.transition(transition).call(axis);
     g.select(".tick:first-of-type text").remove();
-    g.selectAll(".tick:not(:first-of-type) line").attr("class", "axis");
+    g.selectAll(".tick:not(:first-of-type) line").attr("class", "bar-axis");
     g.select(".domain").remove();
   };
 }
