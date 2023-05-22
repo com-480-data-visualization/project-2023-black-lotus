@@ -53,7 +53,7 @@ function updateCounties(counties, data) {
   });
 }
 
-export default async function drawBubbleMap(data, us) {
+export default async function drawBubbleMap(data, us, cleanup) {
   const svg = d3.select("#map");
   const width = +svg.attr("width");
   const height = +svg.attr("height");
@@ -63,6 +63,7 @@ export default async function drawBubbleMap(data, us) {
     .scale(MAP_SCALE)
     .translate([width / 2, height / 2]);
 
+  cleanup();
   drawUSA(svg, projection, us);
 
   const counties = topojson.feature(us, us.objects.counties);

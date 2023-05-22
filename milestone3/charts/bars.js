@@ -143,7 +143,7 @@ function addRank(cur, barCount) {
     });
 }
 
-export default async function bootstrapBars(data) {
+export default async function bootstrapBars(data, cleanup) {
   const models = Object.keys(data);
   const svg = d3.select("#bars");
   const width = +svg.attr("width");
@@ -216,6 +216,7 @@ export default async function bootstrapBars(data) {
   const updateLabels = labels(svg, BAR_COUNT, x, y, previous, next);
   const updateTicker = ticker(svg, barHeight, BAR_COUNT, width, MARGIN);
 
+  cleanup();
   for (const timepoint of timepoints) {
     const transition = svg.transition().duration(DURATION).ease(d3.easeLinear);
 

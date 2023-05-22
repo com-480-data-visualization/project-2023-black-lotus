@@ -1,6 +1,7 @@
 import * as d3 from "d3";
 import * as topojson from "topojson";
 import drawUSA from "./usaMap";
+import "../assets/css/airline.css";
 
 const MAP_SCALE = 800;
 const STATE_CODE_TO_NAME = {
@@ -194,7 +195,7 @@ function updateAirlineMap(data, airline, svg, projection, statesCenterMap) {
     .text(airline);
 }
 
-export default function drawAirlineMap(data, us, airline) {
+export default function drawAirlineMap(data, us, airline, cleanup) {
   const svg = d3.select("#airline");
   const width = +svg.attr("width");
   const height = +svg.attr("height");
@@ -206,6 +207,7 @@ export default function drawAirlineMap(data, us, airline) {
     .scale(MAP_SCALE)
     .translate([width / 2, height / 2]);
 
+  cleanup();
   drawUSA(svg, projection, us);
   const states = topojson.feature(us, us.objects.states);
   initializeStateCenters(states);

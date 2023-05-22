@@ -1,3 +1,8 @@
+.bars-container svg {
+  width: 100%;
+  height: auto;
+}
+
 .bar {
   fill: var(--primary);
   fill-opacity: 1;

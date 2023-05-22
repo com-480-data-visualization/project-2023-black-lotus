@@ -3,6 +3,7 @@ import "@picocss/pico/css/pico.min.css";
 import "./assets/css/map.css";
 import "./assets/css/ring.css";
 import "./assets/css/layout.css";
+import "./assets/css/loader.css";
 import {
   loadDataLatLon,
   getCrashesPerMonth,
@@ -17,6 +18,7 @@ import bootstrapYearDoubleSlider from "./lib/doubleSlider";
 import bootstrapSpiral from "./charts/spiral";
 import bootstrapBars from "./charts/bars";
 import drawAirlineMap from "./charts/airlines";
+import { removeLoader } from "./lib/loader";
 
 async function initializeBubbleMap(us) {
   let dataLatLon = await loadDataLatLon();
@@ -29,7 +31,8 @@ async function initializeBubbleMap(us) {
       (crash) =>
         +crash["Event.Year"] >= leftYear && +crash["Event.Year"] <= rightYear
     ),
-    us
+    us,
+    () => removeLoader("map")
   );
 
   const currentYearSpan = document.getElementById("current-year");
@@ -91,7 +94,7 @@ async function initializeBubbleMap(us) {
 
 async function initializeSpiral(data) {
   const flatCrashesPerMonth = flattenCrashesPerMonth(getCrashesPerMonth(data));
-  bootstrapSpiral(flatCrashesPerMonth);
+  bootstrapSpiral(flatCrashesPerMonth, () => removeLoader("ring"));
 }
 
 async function initializeAirlineMap(us) {
@@ -114,7 +117,8 @@ async function initializeAirlineMap(us) {
   const updateAirlineMap = drawAirlineMap(
     data[defaultAirline],
     us,
-    defaultAirline
+    defaultAirline,
+    () => removeLoader("airline")
   );
   airlineSelect.addEventListener("change", (event) =>
     updateAirlineMap(data[event.target.value], event.target.value)
@@ -123,7 +127,7 @@ async function initializeAirlineMap(us) {
 
 async function initializeBars(data) {
   const crashesPerModel = getCrashesPerModel(data, "piper", false);
-  bootstrapBars(crashesPerModel);
+  bootstrapBars(crashesPerModel, () => removeLoader("bars"));
 }
 
 async function initializeDocument() {

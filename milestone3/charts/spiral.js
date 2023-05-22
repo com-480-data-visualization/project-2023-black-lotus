@@ -163,7 +163,7 @@ function addSpiralHoverEffects(bars, label) {
     });
 }
 
-export default function bootstrapSpiral(data) {
+export default function bootstrapSpiral(data, cleanup) {
   const svg = d3.select("#ring");
   const width = +svg.attr("width");
   const height = +svg.attr("height");
@@ -175,4 +175,5 @@ export default function bootstrapSpiral(data) {
   const bars = drawSpiral(data, g, width, height);
   addSpiralHoverEffects(bars, label);
   drawAxisTicks(g, data);
+  cleanup();
 }
