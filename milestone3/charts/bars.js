@@ -148,92 +148,85 @@ function addRank(cur, barCount) {
 export default async function bootstrapBars(data, cleanup) {
   timepoints = [];
   cleanup();
-  try {
-    const models = Object.keys(data);
-    const svg = d3.select("#bars");
-    const width = +svg.attr("width");
-    const height = +svg.attr("height");
+  const models = Object.keys(data);
+  const svg = d3.select("#bars");
+  const width = +svg.attr("width");
+  const height = +svg.attr("height");
 
-    const BAR_COUNT = 10;
-    const DURATION = 50;
-    const FRAME_COUNT = 10;
-    const START_YEAR = 1982;
-    const END_YEAR = 2022;
-    const PADDING = 0.1;
-    const MARGIN = { top: 16, right: 6, bottom: 6, left: 0 };
-    for (let year = START_YEAR; year <= END_YEAR; year++) {
-      for (let i = 0; i < FRAME_COUNT; i++) {
-        let currentCrashesForModel = [];
-        if (year == END_YEAR) {
-          for (let model of models) {
-            currentCrashesForModel.push({
-              model: model,
-              value: data[model][year].count,
-            });
-          }
-          timepoints.push([
-            { year: year },
-            addRank(currentCrashesForModel, BAR_COUNT),
-          ]);
-          break;
-        } else {
-          for (let model of models) {
-            currentCrashesForModel.push({
-              model: model,
-              value:
-                ((FRAME_COUNT - i) * data[model][year].count +
-                  i * data[model][year + 1].count) /
-                FRAME_COUNT,
-            });
-          }
-          timepoints.push([
-            { year: year },
-            addRank(currentCrashesForModel, BAR_COUNT),
-          ]);
+  const BAR_COUNT = 10;
+  const DURATION = 50;
+  const FRAME_COUNT = 10;
+  const START_YEAR = 1982;
+  const END_YEAR = 2022;
+  const PADDING = 0.1;
+  const MARGIN = { top: 16, right: 6, bottom: 6, left: 0 };
+  for (let year = START_YEAR; year <= END_YEAR; year++) {
+    for (let i = 0; i < FRAME_COUNT; i++) {
+      let currentCrashesForModel = [];
+      if (year == END_YEAR) {
+        for (let model of models) {
+          currentCrashesForModel.push({
+            model: model,
+            value: data[model][year].count,
+          });
         }
+        timepoints.push([
+          { year: year },
+          addRank(currentCrashesForModel, BAR_COUNT),
+        ]);
+        break;
+      } else {
+        for (let model of models) {
+          currentCrashesForModel.push({
+            model: model,
+            value:
+              ((FRAME_COUNT - i) * data[model][year].count +
+                i * data[model][year + 1].count) /
+              FRAME_COUNT,
+          });
+        }
+        timepoints.push([
+          { year: year },
+          addRank(currentCrashesForModel, BAR_COUNT),
+        ]);
       }
     }
+  }
 
-    let nameFrames = d3.groups(
-      timepoints.flatMap(([, data]) => data),
-      (d) => d.model
-    );
-    let previous = new Map(
-      nameFrames.flatMap(([, data]) => d3.pairs(data, (a, b) => [b, a]))
-    );
-    let next = new Map(nameFrames.flatMap(([, data]) => d3.pairs(data)));
-    let x = d3.scaleLinear([0, 1], [MARGIN.left, width - MARGIN.right]);
+  let nameFrames = d3.groups(
+    timepoints.flatMap(([, data]) => data),
+    (d) => d.model
+  );
+  let previous = new Map(
+    nameFrames.flatMap(([, data]) => d3.pairs(data, (a, b) => [b, a]))
+  );
+  let next = new Map(nameFrames.flatMap(([, data]) => d3.pairs(data)));
+  let x = d3.scaleLinear([0, 1], [MARGIN.left, width - MARGIN.right]);
 
-    let barHeight = (height - MARGIN.top - MARGIN.bottom) / (BAR_COUNT + 1);
-    let y = d3
-      .scaleBand()
-      .domain(d3.range(BAR_COUNT + 1))
-      .rangeRound([
-        MARGIN.top,
-        MARGIN.top + barHeight * (BAR_COUNT + 1 + PADDING),
-      ])
-      .padding(PADDING);
+  let barHeight = (height - MARGIN.top - MARGIN.bottom) / (BAR_COUNT + 1);
+  let y = d3
+    .scaleBand()
+    .domain(d3.range(BAR_COUNT + 1))
+    .rangeRound([
+      MARGIN.top,
+      MARGIN.top + barHeight * (BAR_COUNT + 1 + PADDING),
+    ])
+    .padding(PADDING);
 
-    const updateBars = bars(svg, previous, next, x, y, BAR_COUNT);
-    const updateAxis = axis(svg, barHeight, BAR_COUNT, x, y, MARGIN, width);
-    const updateLabels = labels(svg, BAR_COUNT, x, y, previous, next);
-    const updateTicker = ticker(svg, barHeight, BAR_COUNT, width, MARGIN);
+  const updateBars = bars(svg, previous, next, x, y, BAR_COUNT);
+  const updateAxis = axis(svg, barHeight, BAR_COUNT, x, y, MARGIN, width);
+  const updateLabels = labels(svg, BAR_COUNT, x, y, previous, next);
+  const updateTicker = ticker(svg, barHeight, BAR_COUNT, width, MARGIN);
 
-    for (const timepoint of timepoints) {
-      const transition = svg
-        .transition()
-        .duration(DURATION)
-        .ease(d3.easeLinear);
+  for (const timepoint of timepoints) {
+    const transition = svg.transition().duration(DURATION).ease(d3.easeLinear);
 
-      x.domain([0, timepoint[1][0].value]);
-      updateAxis(timepoint, transition);
-      updateBars(timepoint, transition);
-      updateLabels(timepoint, transition);
-      updateTicker(timepoint, transition);
+    x.domain([0, timepoint[1][0].value]);
+    updateAxis(timepoint, transition);
+    updateBars(timepoint, transition);
+    updateLabels(timepoint, transition);
+    updateTicker(timepoint, transition);
 
-      await transition.end();
-    }
-  } catch (error) {
-    console.log(error);
+    await transition.end();
   }
 }

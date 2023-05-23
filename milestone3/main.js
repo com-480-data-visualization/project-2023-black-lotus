@@ -133,7 +133,7 @@ async function initializeBars(data) {
 
   const btn = document.getElementById("start-bars");
   let defaultManu = "";
-  ["Piper", "Cessna", "Boeing", "Airbus", "Beech"].forEach((manu, i) => {
+  ["Piper", "Cessna", "Boeing", "Beech"].forEach((manu, i) => {
     let manuOption = document.createElement("option");
     if (i == 0) {
       manuOption.selected = true;
