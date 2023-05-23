@@ -7,6 +7,13 @@
   fill: none;
   stroke: var(--primary);
   stroke-opacity: 0.3;
+  z-index: 9999;
+}
+
+.link.active {
+  fill: none;
+  stroke: var(--primary);
+  stroke-opacity: 1;
 }
 
 .airline-rect {

@@ -12,15 +12,20 @@
   opacity: 0.5;
   stroke: rgba(255, 255, 255, 0.8);
   stroke-width: 0.5;
+  pointer-events: none;
 }
 
 .state-line {
-  fill: none;
+  fill: var(--contrast);
   stroke: var(--background-color);
-  stroke-width: 0.6;
+  stroke-width: 0.3;
   stroke-linecap: round;
   stroke-linejoin: round;
-  pointer-events: none;
+  cursor: pointer;
+}
+
+.state-line.active {
+  fill: var(--primary);
 }
 
 .state {

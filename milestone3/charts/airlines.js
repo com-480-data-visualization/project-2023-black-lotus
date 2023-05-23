@@ -144,6 +144,7 @@ function updateAirlineMap(data, airline, svg, projection, statesCenterMap) {
         target: targets[indexOfNextTarget].target,
       },
       width: data[targets[indexOfNextTarget].state],
+      state: STATE_CODE_TO_NAME[targets[indexOfNextTarget].state].toLowerCase(),
     };
     lastLinkX += link.width * amplifier;
     return link;
@@ -156,6 +157,7 @@ function updateAirlineMap(data, airline, svg, projection, statesCenterMap) {
     .join("path")
     .transition()
     .attr("class", "link")
+    .attr("data-state", (d) => d.state)
     .attr("d", (d) => curve(d.line))
     .attr("stroke-width", (d) => d.width * (amplifier - pad));
 
@@ -206,7 +208,36 @@ export default function drawAirlineMap(data, us, airline, cleanup) {
     .translate([width / 2, height / 2]);
 
   cleanup();
-  drawUSA(svg, projection, us);
+  drawUSA(
+    svg,
+    projection,
+    us,
+    false,
+    (event) => {
+      const links = svg.selectAll(".link");
+      const targetLink = Array.from(links._groups[0]).find((n) => {
+        return (
+          n.getAttribute("data-state") ==
+          event.target.getAttribute("data-state")
+        );
+      });
+      if (targetLink) {
+        targetLink.classList.add("active");
+      }
+    },
+    (event) => {
+      const links = svg.selectAll(".link");
+      const targetLink = Array.from(links._groups[0]).find((n) => {
+        return (
+          n.getAttribute("data-state") ==
+          event.target.getAttribute("data-state")
+        );
+      });
+      if (targetLink) {
+        targetLink.classList.remove("active");
+      }
+    }
+  );
   const states = topojson.feature(us, us.objects.states);
   initializeStateCenters(states);
   const statesCenterMap = states.features.reduce((map, state) => {

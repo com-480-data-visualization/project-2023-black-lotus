@@ -64,15 +64,15 @@ export default async function drawBubbleMap(data, us, cleanup) {
     .translate([width / 2, height / 2]);
 
   cleanup();
-  drawUSA(svg, projection, us);
+  const g = drawUSA(svg, projection, us, true);
 
   const counties = topojson.feature(us, us.objects.counties);
   initializeCountyCenters(counties);
   updateCounties(counties, data);
-  updateMap(svg, projection, counties);
+  updateMap(g, projection, counties);
 
   return (newData) => {
     updateCounties(counties, newData);
-    updateMap(svg, projection, counties);
+    updateMap(g, projection, counties);
   };
 }
