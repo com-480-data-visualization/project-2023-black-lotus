@@ -51,7 +51,13 @@ body {
 }
 
 .btns {
-  width: 200px;
+  width: 150px;
+  margin: 0 auto;
+  display: inline;
+}
+
+.radio-btns {
+  width: 250px;
   margin: 0 auto;
   display: inline;
 }

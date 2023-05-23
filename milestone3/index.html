@@ -170,7 +170,7 @@
       </div>
       <!-- BARS -->
       <div class="grid reverse">
-        <div class="big-60 bars-container">
+        <div class="big-60 bars-container" id="bars-container">
           <svg
             class="loader"
             xmlns="http://www.w3.org/2000/svg"
@@ -215,8 +215,17 @@
               />
             </div>
           </div-->
-          <button class="btns start">Start</button>
-          <!--button class="btns start">Stop</button-->
+          <label for="manu-select">Manufacturer</label>
+          <select id="manu-select" required></select>
+
+          
+          <button class="btns start" id="start-bars">Restart</button>
+          <fieldset class="radio-btns">
+              <input type="radio" id="death-toll" name="fav_language" value="death-toll" checked>
+              <label for="death-toll">Death Toll</label><br>
+              <input type="radio" id="crash-count" name="fav_language" value="crash-count">
+              <label for="crash-count">Number of Crashes</label><br>
+          </fieldset>
           <p>
             "What's happened to me?" he thought. It wasn't a dream. His room, a
             proper human room although a little too small, lay peacefully

@@ -4,6 +4,7 @@ import "./assets/css/map.css";
 import "./assets/css/ring.css";
 import "./assets/css/layout.css";
 import "./assets/css/loader.css";
+import * as d3 from "d3";
 import {
   loadDataLatLon,
   getCrashesPerMonth,
@@ -126,8 +127,54 @@ async function initializeAirlineMap(us) {
 }
 
 async function initializeBars(data) {
-  const crashesPerModel = getCrashesPerModel(data, "piper", false);
+  const crashButton = document.getElementById("crash-count");
+  const deathButton = document.getElementById("death-toll");
+  const manuSelect = document.getElementById("manu-select");
+
+  const btn = document.getElementById("start-bars");
+  let defaultManu = "";
+  ["Piper", "Cessna", "Boeing", "Airbus", "Beech"].forEach((manu, i) => {
+    let manuOption = document.createElement("option");
+    if (i == 0) {
+      manuOption.selected = true;
+      defaultManu = manu;
+    }
+    manuOption.value = manu;
+    manuOption.innerHTML = manu;
+    manuSelect.appendChild(manuOption);
+  });
+
+  const crashesPerModel = getCrashesPerModel(
+    data,
+    manuSelect.value,
+    crashButton.checked
+  );
   bootstrapBars(crashesPerModel, () => removeLoader("bars"));
+
+  let restart = (_) => {
+    const crashesPerModel = getCrashesPerModel(
+      data,
+      manuSelect.value,
+      crashButton.checked
+    );
+    bootstrapBars(crashesPerModel, () => {
+      document.getElementById("bars").remove();
+      const newBars = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "svg"
+      );
+      newBars.setAttribute("id", "bars");
+      newBars.setAttribute("width", "640");
+      newBars.setAttribute("height", "740");
+      newBars.setAttribute("viewbox", "0 0 640 740");
+      document.getElementById("bars-container").appendChild(newBars);
+    });
+  };
+
+  btn.addEventListener("click", restart);
+  manuSelect.addEventListener("change", restart);
+  crashButton.addEventListener("change", restart);
+  deathButton.addEventListener("change", restart);
 }
 
 async function initializeDocument() {
