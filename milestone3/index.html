@@ -6,75 +6,45 @@
     <title>Air Crash Investigation</title>
   </head>
   <body>
+
+    <div class="title-container">
+      <img src="title-image.avif" class="title-image" alt="Plane Crash">
+      <h1 class="title-text"> Air Crash Investigation</h1>
+      <div class="quote-text">"Failure saves lives. In the airline industry, every time a plane crashes the probability of the next crash is lowered by that."
+        <br> <br>
+        Nassim Nicholas Taleb, a Lebanese-American author
+      </div>
+    </div>
+
     <main class="container">
-      <h1>Air Crash Investigation</h1>
-      <!-- MAP -->
-      <div class="grid">
-        <div class="big-60 map-container">
-          <svg
-            class="loader"
-            xmlns="http://www.w3.org/2000/svg"
-            width="230"
-            height="230"
-          >
-            <path
-              class="loader-path"
-              d="M86.429 40c63.616-20.04 101.511 25.08 107.265 61.93 6.487 41.54-18.593 76.99-50.6 87.643-59.46 19.791-101.262-23.577-107.142-62.616C29.398 83.441 59.945 48.343 86.43 40z"
-              fill="none"
-              stroke="#0099cc"
-              stroke-width="4"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-dasharray="10 10 10 10 10 10 10 432"
-              stroke-dashoffset="77"
-            />
-            <path
-              class="loader-plane"
-              d="M141.493 37.93c-1.087-.927-2.942-2.002-4.32-2.501-2.259-.824-3.252-.955-9.293-1.172-4.017-.146-5.197-.23-5.47-.37-.766-.407-1.526-1.448-7.114-9.773-4.8-7.145-5.344-7.914-6.327-8.976-1.214-1.306-1.396-1.378-3.79-1.473-1.036-.04-2-.043-2.153-.002-.353.1-.87.586-1 .952-.139.399-.076.71.431 2.22.241.72 1.029 3.386 1.742 5.918 1.644 5.844 2.378 8.343 2.863 9.705.206.601.33 1.1.275 1.125-.24.097-10.56 1.066-11.014 1.032a3.532 3.532 0 0 1-1.002-.276l-.487-.246-2.044-2.613c-2.234-2.87-2.228-2.864-3.35-3.309-.717-.287-2.82-.386-3.276-.163-.457.237-.727.644-.737 1.152-.018.39.167.805 1.916 4.373 1.06 2.166 1.964 4.083 1.998 4.27.04.179.004.521-.076.75-.093.228-1.109 2.064-2.269 4.088-1.921 3.34-2.11 3.711-2.123 4.107-.008.25.061.557.168.725.328.512.72.644 1.966.676 1.32.029 2.352-.236 3.05-.762.222-.171 1.275-1.313 2.412-2.611 1.918-2.185 2.048-2.32 2.45-2.505.241-.111.601-.232.82-.271.267-.058 2.213.201 5.912.8 3.036.48 5.525.894 5.518.914 0 .026-.121.306-.27.638-.54 1.198-1.515 3.842-3.35 9.021-1.029 2.913-2.107 5.897-2.4 6.62-.703 1.748-.725 1.833-.594 2.286.137.46.45.833.872 1.012.41.177 3.823.24 4.37.085.852-.25 1.44-.688 2.312-1.724 1.166-1.39 3.169-3.948 6.771-8.661 5.8-7.583 6.561-8.49 7.387-8.702.233-.065 2.828-.056 5.784.011 5.827.138 6.64.09 8.62-.5 2.24-.67 4.035-1.65 5.517-3.016 1.136-1.054 1.135-1.014.207-1.962-.357-.38-.767-.777-.902-.893z"
-              class="cal-loader__plane"
-              fill="#000033"
-            />
-          </svg>
-          <svg id="map" width="740" height="500" viewbox="0 0 740 500"></svg>
-        </div>
-        <div class="small-40 map-filtering-container">
-          <h3>Years: <span id="current-year">2001 - 2022</span></h3>
-          <div class="range">
-            <div class="range-slider">
-              <span class="range-selected"></span>
-            </div>
-            <div class="range-input">
-              <input
-                type="range"
-                class="min"
-                min="2001"
-                max="2022"
-                value="2001"
-                step="1"
-              />
-              <input
-                type="range"
-                class="max"
-                min="2001"
-                max="2022"
-                value="2022"
-                step="1"
-              />
-            </div>
-          </div>
-          <label for="phase-select">Phase of Flight</label>
-          <select id="phase-select" required></select>
-          <p>
-            One morning, when Gregor Samsa woke from troubled dreams, he found
-            himself transformed in his bed into a horrible vermin. He lay on his
-            armour-like back, and if he lifted his head a little he could see
-            his brown belly, slightly domed and divided by arches into stiff
-            sections. The bedding was hardly able to cover it and seemed ready
-            to slide off any moment. His many legs, pitifully thin compared with
-            the size of the rest of him, waved
-          </p>
+
+      <div class="intro-container">
+
+        <h3>Intro</h3>
+        <div class="intro">
+          When one mentions plane crashes, the first thing that comes to mind is dreadful pictures of half-burnt air behemoths snapped in two, big headlines, and news articles that speak about tragic, fatal, incidents with almost no survivors.
+          <br> <br>
+          However...
+          <br> <br>
+          Is this really always the case? Does a solid foundation for this outlook exist in data? How did aviation change and evolve during the recent history? 
+          <br> <br>
+          Our goal is to answer these questions and more, by presenting the data from the <a href="https://www.kaggle.com/datasets/khsamaha/aviation-accident-database-synopses?select=AviationData.csv">NTSB aviation accident dataset</a> through several interactive visualizations.
         </div>
       </div>
+
+      
+
+      <div class="grid">
+
+        <div class="question-container">
+          <h3 class="question-title">Temporal trends</h3>
+          <div class="question-text">
+            Does the number of crashes increase or decrease over time? During which season are they more frequent? Scroll down to see the answer!
+          </div>
+        </div>
+
+      </div>
+      
       <!-- RING -->
       <div class="grid reverse">
         <div class="big-60 ring-container">
@@ -107,69 +77,27 @@
         <div class="small-40 ring-text-container">
           <h3>Crashes per month</h3>
           <p>
-            "What's happened to me?" he thought. It wasn't a dream. His room, a
-            proper human room although a little too small, lay peacefully
-            between its four familiar walls. A collection of textile samples lay
-            spread out on the table - Samsa was a travelling salesman - and
-            above it there hung a picture that he had recently cut out of an
-            illustrated magazine and housed in a nice, gilded frame. It showed a
-            lady fitted out with a fur hat and fur boa who sat upright, raising
-            a heavy fur muff that covered the whole
+            Our first visualization aims to give an overview of temporal trends in aviation. The dendrogram to the right illustrates how the number of crashes changed over time, with the height of the bar corresponding to the number of crashes in the given month of the given year.
+            <br> <br>
+            Besides the decreasing trend in the number of crashes, we can also see periodical oscillations.
+            <br> <br>
+            Indeed, more crashes occur during the summer than during the winter! 
           </p>
         </div>
       </div>
-      <!-- Crashes per Model -->
+
+      <div class="question-container">
+        <h3 class="question-title">Models and manufacturers</h3>
+        <div class="question-text">
+          We usually hear about crashes of commercial flights. Unfortunately, crashes of amateur flights seldom reach the news, we only hear about them if a rich famous person was involved in the incident. 
+          <br><br>
+          Are these amateur crashes truly less frequent, or are they only less publicized? 
+        </div>
+      </div>
+
+      
+
       <div class="grid">
-        <div class="big-60 airline-container">
-          <svg
-            class="loader"
-            xmlns="http://www.w3.org/2000/svg"
-            width="230"
-            height="230"
-          >
-            <path
-              class="loader-path"
-              d="M86.429 40c63.616-20.04 101.511 25.08 107.265 61.93 6.487 41.54-18.593 76.99-50.6 87.643-59.46 19.791-101.262-23.577-107.142-62.616C29.398 83.441 59.945 48.343 86.43 40z"
-              fill="none"
-              stroke="#0099cc"
-              stroke-width="4"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-dasharray="10 10 10 10 10 10 10 432"
-              stroke-dashoffset="77"
-            />
-            <path
-              class="loader-plane"
-              d="M141.493 37.93c-1.087-.927-2.942-2.002-4.32-2.501-2.259-.824-3.252-.955-9.293-1.172-4.017-.146-5.197-.23-5.47-.37-.766-.407-1.526-1.448-7.114-9.773-4.8-7.145-5.344-7.914-6.327-8.976-1.214-1.306-1.396-1.378-3.79-1.473-1.036-.04-2-.043-2.153-.002-.353.1-.87.586-1 .952-.139.399-.076.71.431 2.22.241.72 1.029 3.386 1.742 5.918 1.644 5.844 2.378 8.343 2.863 9.705.206.601.33 1.1.275 1.125-.24.097-10.56 1.066-11.014 1.032a3.532 3.532 0 0 1-1.002-.276l-.487-.246-2.044-2.613c-2.234-2.87-2.228-2.864-3.35-3.309-.717-.287-2.82-.386-3.276-.163-.457.237-.727.644-.737 1.152-.018.39.167.805 1.916 4.373 1.06 2.166 1.964 4.083 1.998 4.27.04.179.004.521-.076.75-.093.228-1.109 2.064-2.269 4.088-1.921 3.34-2.11 3.711-2.123 4.107-.008.25.061.557.168.725.328.512.72.644 1.966.676 1.32.029 2.352-.236 3.05-.762.222-.171 1.275-1.313 2.412-2.611 1.918-2.185 2.048-2.32 2.45-2.505.241-.111.601-.232.82-.271.267-.058 2.213.201 5.912.8 3.036.48 5.525.894 5.518.914 0 .026-.121.306-.27.638-.54 1.198-1.515 3.842-3.35 9.021-1.029 2.913-2.107 5.897-2.4 6.62-.703 1.748-.725 1.833-.594 2.286.137.46.45.833.872 1.012.41.177 3.823.24 4.37.085.852-.25 1.44-.688 2.312-1.724 1.166-1.39 3.169-3.948 6.771-8.661 5.8-7.583 6.561-8.49 7.387-8.702.233-.065 2.828-.056 5.784.011 5.827.138 6.64.09 8.62-.5 2.24-.67 4.035-1.65 5.517-3.016 1.136-1.054 1.135-1.014.207-1.962-.357-.38-.767-.777-.902-.893z"
-              class="cal-loader__plane"
-              fill="#000033"
-            />
-          </svg>
-          <svg
-            id="airline"
-            width="740"
-            height="650"
-            viewbox="0 0 740 650"
-          ></svg>
-        </div>
-        <div class="small-40 airline-text-container">
-          <h3>Airline crashes</h3>
-          <label for="airline-select">Airline</label>
-          <select id="airline-select" required></select>
-          <p>
-            "What's happened to me?" he thought. It wasn't a dream. His room, a
-            proper human room although a little too small, lay peacefully
-            between its four familiar walls. A collection of textile samples lay
-            spread out on the table - Samsa was a travelling salesman - and
-            above it there hung a picture that he had recently cut out of an
-            illustrated magazine and housed in a nice, gilded frame. It showed a
-            lady fitted out with a fur hat and fur boa who sat upright, raising
-            a heavy fur muff that covered the whole
-          </p>
-        </div>
-      </div>
-      <!-- BARS -->
-      <div class="grid reverse">
         <div class="big-60 bars-container" id="bars-container">
           <svg
             class="loader"
@@ -227,14 +155,139 @@
               <label for="crash-count">Number of Crashes</label><br>
           </fieldset>
           <p>
-            "What's happened to me?" he thought. It wasn't a dream. His room, a
-            proper human room although a little too small, lay peacefully
-            between its four familiar walls. A collection of textile samples lay
-            spread out on the table - Samsa was a travelling salesman - and
-            above it there hung a picture that he had recently cut out of an
-            illustrated magazine and housed in a nice, gilded frame. It showed a
-            lady fitted out with a fur hat and fur boa who sat upright, raising
-            a heavy fur muff that covered the whole
+            The bar chart race to the left explores how much the number of crashes per model of the given manufacturer increased during the last 40 years.
+            Notice that the total number of deaths caused by Cessna models is higher than those of Boeing. 
+            This implies that more people died during amateur flights than during commercial ones!
+            <br> <br>
+            Observe also that the scales for the total number of crashes and the total number of deaths differ significantly.
+            This is another way of exploring the correspondence between the fatality of crashes and the total number of investigated incidents.
+          </p>
+        </div>
+      </div>
+
+
+      <div class="question-container">
+        <h3 class="question-title">Geographical trends</h3>
+        <div class="question-text">
+          It is unlikely that crashes are evenly distributed across all states, but where are they more frequent? During which phase of flight are they more likely to occur? Scroll down to see the answer!
+        </div>
+      </div>
+
+      <!-- MAP -->
+      <div class="grid reverse">
+        <div class="big-60 map-container">
+          <svg
+            class="loader"
+            xmlns="http://www.w3.org/2000/svg"
+            width="230"
+            height="230"
+          >
+            <path
+              class="loader-path"
+              d="M86.429 40c63.616-20.04 101.511 25.08 107.265 61.93 6.487 41.54-18.593 76.99-50.6 87.643-59.46 19.791-101.262-23.577-107.142-62.616C29.398 83.441 59.945 48.343 86.43 40z"
+              fill="none"
+              stroke="#0099cc"
+              stroke-width="4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="10 10 10 10 10 10 10 432"
+              stroke-dashoffset="77"
+            />
+            <path
+              class="loader-plane"
+              d="M141.493 37.93c-1.087-.927-2.942-2.002-4.32-2.501-2.259-.824-3.252-.955-9.293-1.172-4.017-.146-5.197-.23-5.47-.37-.766-.407-1.526-1.448-7.114-9.773-4.8-7.145-5.344-7.914-6.327-8.976-1.214-1.306-1.396-1.378-3.79-1.473-1.036-.04-2-.043-2.153-.002-.353.1-.87.586-1 .952-.139.399-.076.71.431 2.22.241.72 1.029 3.386 1.742 5.918 1.644 5.844 2.378 8.343 2.863 9.705.206.601.33 1.1.275 1.125-.24.097-10.56 1.066-11.014 1.032a3.532 3.532 0 0 1-1.002-.276l-.487-.246-2.044-2.613c-2.234-2.87-2.228-2.864-3.35-3.309-.717-.287-2.82-.386-3.276-.163-.457.237-.727.644-.737 1.152-.018.39.167.805 1.916 4.373 1.06 2.166 1.964 4.083 1.998 4.27.04.179.004.521-.076.75-.093.228-1.109 2.064-2.269 4.088-1.921 3.34-2.11 3.711-2.123 4.107-.008.25.061.557.168.725.328.512.72.644 1.966.676 1.32.029 2.352-.236 3.05-.762.222-.171 1.275-1.313 2.412-2.611 1.918-2.185 2.048-2.32 2.45-2.505.241-.111.601-.232.82-.271.267-.058 2.213.201 5.912.8 3.036.48 5.525.894 5.518.914 0 .026-.121.306-.27.638-.54 1.198-1.515 3.842-3.35 9.021-1.029 2.913-2.107 5.897-2.4 6.62-.703 1.748-.725 1.833-.594 2.286.137.46.45.833.872 1.012.41.177 3.823.24 4.37.085.852-.25 1.44-.688 2.312-1.724 1.166-1.39 3.169-3.948 6.771-8.661 5.8-7.583 6.561-8.49 7.387-8.702.233-.065 2.828-.056 5.784.011 5.827.138 6.64.09 8.62-.5 2.24-.67 4.035-1.65 5.517-3.016 1.136-1.054 1.135-1.014.207-1.962-.357-.38-.767-.777-.902-.893z"
+              class="cal-loader__plane"
+              fill="#000033"
+            />
+          </svg>
+          <svg id="map" width="740" height="500" viewbox="0 0 740 500"></svg>
+        </div>
+        <div class="small-40 map-filtering-container">
+          <h3>Years: <span id="current-year">2001 - 2022</span></h3>
+          <div class="range">
+            <div class="range-slider">
+              <span class="range-selected"></span>
+            </div>
+            <div class="range-input">
+              <input
+                type="range"
+                class="min"
+                min="2001"
+                max="2022"
+                value="2001"
+                step="1"
+              />
+              <input
+                type="range"
+                class="max"
+                min="2001"
+                max="2022"
+                value="2022"
+                step="1"
+              />
+            </div>
+          </div>
+          <label for="phase-select">Phase of Flight</label>
+          <select id="phase-select" required></select>
+          <p>
+            Our third visualization aims to give an overview of geographical trends in crashes. The map on the right depicts the relative number of crashes per county of each state. We can see that most of these crashes occur in California, Texas, and Florida. By zooming in or clicking on a state, we can explore how these crashes are distributed in each of the states. For example, most of the crashes in California occurred in the vicinity of Los Angeles.
+            <br>
+            <br>
+            We can also observe that crashes are most frequent during the "takeoff" phase. While they are very rare during the "taxi" phase.
+          </p>
+        </div>
+      </div>
+
+
+      <div class="question-container">
+        <h3 class="question-title">Crashes per airline</h3>
+        <div class="question-text">
+          Finally, we explore how the location of a crash depends on the airline conducting the flight. It would be reasonable to expect very similar trends as on the map above...
+        </div>
+      </div>
+
+      <!-- Crashes per Model -->
+      <div class="grid">
+        <div class="big-60 airline-container">
+          <svg
+            class="loader"
+            xmlns="http://www.w3.org/2000/svg"
+            width="230"
+            height="230"
+          >
+            <path
+              class="loader-path"
+              d="M86.429 40c63.616-20.04 101.511 25.08 107.265 61.93 6.487 41.54-18.593 76.99-50.6 87.643-59.46 19.791-101.262-23.577-107.142-62.616C29.398 83.441 59.945 48.343 86.43 40z"
+              fill="none"
+              stroke="#0099cc"
+              stroke-width="4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="10 10 10 10 10 10 10 432"
+              stroke-dashoffset="77"
+            />
+            <path
+              class="loader-plane"
+              d="M141.493 37.93c-1.087-.927-2.942-2.002-4.32-2.501-2.259-.824-3.252-.955-9.293-1.172-4.017-.146-5.197-.23-5.47-.37-.766-.407-1.526-1.448-7.114-9.773-4.8-7.145-5.344-7.914-6.327-8.976-1.214-1.306-1.396-1.378-3.79-1.473-1.036-.04-2-.043-2.153-.002-.353.1-.87.586-1 .952-.139.399-.076.71.431 2.22.241.72 1.029 3.386 1.742 5.918 1.644 5.844 2.378 8.343 2.863 9.705.206.601.33 1.1.275 1.125-.24.097-10.56 1.066-11.014 1.032a3.532 3.532 0 0 1-1.002-.276l-.487-.246-2.044-2.613c-2.234-2.87-2.228-2.864-3.35-3.309-.717-.287-2.82-.386-3.276-.163-.457.237-.727.644-.737 1.152-.018.39.167.805 1.916 4.373 1.06 2.166 1.964 4.083 1.998 4.27.04.179.004.521-.076.75-.093.228-1.109 2.064-2.269 4.088-1.921 3.34-2.11 3.711-2.123 4.107-.008.25.061.557.168.725.328.512.72.644 1.966.676 1.32.029 2.352-.236 3.05-.762.222-.171 1.275-1.313 2.412-2.611 1.918-2.185 2.048-2.32 2.45-2.505.241-.111.601-.232.82-.271.267-.058 2.213.201 5.912.8 3.036.48 5.525.894 5.518.914 0 .026-.121.306-.27.638-.54 1.198-1.515 3.842-3.35 9.021-1.029 2.913-2.107 5.897-2.4 6.62-.703 1.748-.725 1.833-.594 2.286.137.46.45.833.872 1.012.41.177 3.823.24 4.37.085.852-.25 1.44-.688 2.312-1.724 1.166-1.39 3.169-3.948 6.771-8.661 5.8-7.583 6.561-8.49 7.387-8.702.233-.065 2.828-.056 5.784.011 5.827.138 6.64.09 8.62-.5 2.24-.67 4.035-1.65 5.517-3.016 1.136-1.054 1.135-1.014.207-1.962-.357-.38-.767-.777-.902-.893z"
+              class="cal-loader__plane"
+              fill="#000033"
+            />
+          </svg>
+          <svg
+            id="airline"
+            width="740"
+            height="650"
+            viewbox="0 0 740 650"
+          ></svg>
+        </div>
+        <div class="small-40 airline-text-container">
+          <h3>Airline crashes</h3>
+          <label for="airline-select">Airline</label>
+          <select id="airline-select" required></select>
+          <p>
+            However, the geographical location of crashes varies significantly per airline! Notice that, for example, "Delta Airlines" has the highest number of incidents in Georgia. This could be explained by the fact that the headquarters of "Delta Airlines" is in Atlanta, Georgia.
+            <br> <br>
+            However, this reasoning doesn't generalize to the other two companies. For example, the headquarters of "United Airlines" is in Illinois, while the state in which crashes were most frequent is California. 
           </p>
         </div>
       </div>
