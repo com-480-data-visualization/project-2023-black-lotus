@@ -159,7 +159,8 @@ function updateAirlineMap(data, airline, svg, projection, statesCenterMap) {
     .attr("class", "link")
     .attr("data-state", (d) => d.state)
     .attr("d", (d) => curve(d.line))
-    .attr("stroke-width", (d) => d.width * (amplifier - pad));
+    .attr("stroke-width", (d) => d.width * (amplifier - pad))
+    .attr("stroke-opacity", 0.3);
 
   const g = svg
     .selectAll(".airline-rect")
@@ -222,6 +223,7 @@ export default function drawAirlineMap(data, us, airline, cleanup) {
           event.target.getAttribute("data-state")
         );
       });
+      svg.selectAll(".link").attr("stroke-opacity", 0.1);
       if (targetLink) {
         targetLink.classList.add("active");
       }
@@ -237,7 +239,14 @@ export default function drawAirlineMap(data, us, airline, cleanup) {
       const stateCode = NAME_TO_STATE_CODE[d.properties.name];
       const airline = document.getElementById("airline-select").value;
       if (stateCode in data[airline]) {
-        mypopupText.innerText = data[airline][stateCode] + " crashes";
+        if (
+          data[airline][stateCode] == 11 ||
+          data[airline][stateCode] % 10 != 1
+        ) {
+          mypopupText.innerText = data[airline][stateCode] + " crashes";
+        } else {
+          mypopupText.innerText = data[airline][stateCode] + " crash";
+        }
       } else {
         mypopupText.innerText = "No crashes";
       }
@@ -251,11 +260,13 @@ export default function drawAirlineMap(data, us, airline, cleanup) {
 
       mypopupText.style.color = "black";
 
-      mypopup.style.left = event.x - width / 2 + "px";
-      mypopup.style.top = event.y - height / 2 + "px";
+      mypopup.style.left = projection(d.properties.center)[0] * 0.9 + 15 + "px";
+      mypopup.style.top = projection(d.properties.center)[1] * 0.9 + 15 + "px";
     },
     (event) => {
       const links = svg.selectAll(".link");
+
+      svg.selectAll(".link").attr("stroke-opacity", 0.3);
       const targetLink = Array.from(links._groups[0]).find((n) => {
         return (
           n.getAttribute("data-state") ==

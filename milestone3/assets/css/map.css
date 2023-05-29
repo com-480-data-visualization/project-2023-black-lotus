@@ -18,7 +18,7 @@
 .state-line {
   fill: var(--contrast);
   stroke: var(--background-color);
-  stroke-width: 0.3;
+  stroke-width: 0.7;
   stroke-linecap: round;
   stroke-linejoin: round;
   cursor: pointer;

@@ -6,7 +6,6 @@
 .link {
   fill: none;
   stroke: var(--primary);
-  stroke-opacity: 0.3;
   pointer-events: none;
   z-index: 9999;
 }
@@ -14,7 +13,7 @@
 .link.active {
   fill: none;
   stroke: var(--primary);
-  stroke-opacity: 1;
+  stroke-opacity: 0.6;
 }
 
 .airline-rect {

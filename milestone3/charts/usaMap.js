@@ -23,14 +23,17 @@ export default function drawUSA(
     .attr("d", path)
     .attr("data-state", (d) => d.properties.name.toLowerCase());
 
-  console.log("adio");
   statelines.on("mouseenter", function (event, d) {
+    statelines.attr("opacity", 0.5);
     console.log(statelines);
     console.log(event);
     d3.select(this).classed("active", true);
+    d3.select(this).attr("opacity", 1);
     onMouseEnter(event, d);
   });
   statelines.on("mouseleave", function (event, d) {
+    statelines.attr("opacity", 1);
+    statelines.attr("stroke-width", 0.2);
     d3.select(this).classed("active", false);
     onMouseLeave(event);
   });
