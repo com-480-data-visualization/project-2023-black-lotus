@@ -115,11 +115,8 @@ async function initializeAirlineMap(us) {
     airlineSelect.appendChild(airlineOption);
   });
 
-  const updateAirlineMap = drawAirlineMap(
-    data[defaultAirline],
-    us,
-    defaultAirline,
-    () => removeLoader("airline")
+  const updateAirlineMap = drawAirlineMap(data, us, defaultAirline, () =>
+    removeLoader("airline")
   );
   airlineSelect.addEventListener("change", (event) =>
     updateAirlineMap(data[event.target.value], event.target.value)

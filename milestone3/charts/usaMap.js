@@ -6,7 +6,7 @@ export default function drawUSA(
   projection,
   us,
   zoomable = false,
-  onMouseEnter = (event) => {},
+  onMouseEnter = (event, d) => {},
   onMouseLeave = (event) => {}
 ) {
   const width = +svg.attr("width");
@@ -23,10 +23,12 @@ export default function drawUSA(
     .attr("d", path)
     .attr("data-state", (d) => d.properties.name.toLowerCase());
 
+  console.log("adio");
   statelines.on("mouseenter", function (event, d) {
+    console.log(statelines);
     console.log(event);
     d3.select(this).classed("active", true);
-    onMouseEnter(event);
+    onMouseEnter(event, d);
   });
   statelines.on("mouseleave", function (event, d) {
     d3.select(this).classed("active", false);

@@ -208,12 +208,13 @@ export default function drawAirlineMap(data, us, airline, cleanup) {
     .translate([width / 2, height / 2]);
 
   cleanup();
-  drawUSA(
+  const g = drawUSA(
     svg,
     projection,
     us,
     false,
-    (event) => {
+    (event, d) => {
+      console.log(d);
       const links = svg.selectAll(".link");
       const targetLink = Array.from(links._groups[0]).find((n) => {
         return (
@@ -224,6 +225,34 @@ export default function drawAirlineMap(data, us, airline, cleanup) {
       if (targetLink) {
         targetLink.classList.add("active");
       }
+      var mypopup = document.getElementById("popup");
+      mypopup.style.display = "block";
+      var mypopupTitle = document.getElementById("popup-title");
+      mypopupTitle.innerText = d.properties.name; //jel ok?
+      mypopupTitle.style.color = "black";
+      var mypopupText = document.getElementById("popup-text");
+      const NAME_TO_STATE_CODE = Object.fromEntries(
+        Object.entries(STATE_CODE_TO_NAME).map(([key, value]) => [value, key])
+      );
+      const stateCode = NAME_TO_STATE_CODE[d.properties.name];
+      const airline = document.getElementById("airline-select").value;
+      if (stateCode in data[airline]) {
+        mypopupText.innerText = data[airline][stateCode] + " crashes";
+      } else {
+        mypopupText.innerText = "No crashes";
+      }
+
+      mypopup.style.width = "auto";
+
+      mypopupTitle.style.fontSize = "16px";
+      mypopupText.style.fontSize = "12px";
+      mypopupText.style.margin = "0px";
+      mypopupTitle.style.margin = "1px";
+
+      mypopupText.style.color = "black";
+
+      mypopup.style.left = event.x - width / 2 + "px";
+      mypopup.style.top = event.y - height / 2 + "px";
     },
     (event) => {
       const links = svg.selectAll(".link");
@@ -236,6 +265,8 @@ export default function drawAirlineMap(data, us, airline, cleanup) {
       if (targetLink) {
         targetLink.classList.remove("active");
       }
+      var mypopup = document.getElementById("popup");
+      mypopup.style.display = "none";
     }
   );
   const states = topojson.feature(us, us.objects.states);
@@ -247,7 +278,7 @@ export default function drawAirlineMap(data, us, airline, cleanup) {
     };
   }, {});
 
-  updateAirlineMap(data, airline, svg, projection, statesCenterMap);
+  updateAirlineMap(data[airline], airline, svg, projection, statesCenterMap);
 
   return (data, airline) => {
     updateAirlineMap(data, airline, svg, projection, statesCenterMap);

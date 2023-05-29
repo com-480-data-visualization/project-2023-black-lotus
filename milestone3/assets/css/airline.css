@@ -7,6 +7,7 @@
   fill: none;
   stroke: var(--primary);
   stroke-opacity: 0.3;
+  pointer-events: none;
   z-index: 9999;
 }
 

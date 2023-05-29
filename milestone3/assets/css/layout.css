@@ -125,3 +125,15 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+#popup {
+  width: 170px;
+  padding: 10px;
+  font-family: Arial, sans-serif;
+  color: black;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 4px 7px;
+  position: absolute;
+  display: none;
+}
