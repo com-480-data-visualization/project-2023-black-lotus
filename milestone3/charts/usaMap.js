@@ -25,8 +25,6 @@ export default function drawUSA(
 
   statelines.on("mouseenter", function (event, d) {
     statelines.attr("opacity", 0.5);
-    console.log(statelines);
-    console.log(event);
     d3.select(this).classed("active", true);
     d3.select(this).attr("opacity", 1);
     onMouseEnter(event, d);
@@ -64,8 +62,8 @@ export default function drawUSA(
           d3.pointer(event, svg.node())
         );
     });
-    svg.call(zoom);
-    svg.on("doubleclick", function () {
+    /*svg.call(zoom);*/
+    svg.on("dblclick", function () {
       console.log("dbl");
       svg
         .transition()
