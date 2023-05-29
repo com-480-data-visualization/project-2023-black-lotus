@@ -260,8 +260,16 @@ export default function drawAirlineMap(data, us, airline, cleanup) {
 
       mypopupText.style.color = "black";
 
-      mypopup.style.left = projection(d.properties.center)[0] * 0.9 + 15 + "px";
-      mypopup.style.top = projection(d.properties.center)[1] * 0.9 + 15 + "px";
+      var mySvg = document.getElementById("airline");
+
+      var point = mySvg.createSVGPoint();
+      point.x = projection(d.properties.center)[0];
+      point.y = projection(d.properties.center)[1];
+
+      var screenPoint = point.matrixTransform(mySvg.getScreenCTM());
+
+      mypopup.style.left = screenPoint.x + 15 + "px";
+      mypopup.style.top = screenPoint.y + 15 + "px";
     },
     (event) => {
       const links = svg.selectAll(".link");
