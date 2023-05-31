@@ -123,6 +123,20 @@ async function initializeAirlineMap(us) {
   );
 }
 
+function removeBars() {
+  const bars = document.getElementById("bars");
+  const id = bars.getAttribute("id");
+  const width = bars.getAttribute("width");
+  const height = bars.getAttribute("height");
+  bars.remove();
+  const newBars = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  newBars.setAttribute("id", id);
+  newBars.setAttribute("width", width);
+  newBars.setAttribute("height", height);
+  newBars.setAttribute("viewbox", `0 0 ${width} ${height}`);
+  document.getElementById("bars-container").appendChild(newBars);
+}
+
 async function initializeBars(data) {
   const crashButton = document.getElementById("crash-count");
   const deathButton = document.getElementById("death-toll");
@@ -146,7 +160,10 @@ async function initializeBars(data) {
     manuSelect.value,
     crashButton.checked
   );
-  bootstrapBars(crashesPerModel, () => removeLoader("bars"));
+  bootstrapBars(crashesPerModel, () => {
+    removeLoader("bars");
+    removeBars();
+  });
 
   let restart = (_) => {
     const crashesPerModel = getCrashesPerModel(
@@ -154,18 +171,7 @@ async function initializeBars(data) {
       manuSelect.value,
       crashButton.checked
     );
-    bootstrapBars(crashesPerModel, () => {
-      document.getElementById("bars").remove();
-      const newBars = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "svg"
-      );
-      newBars.setAttribute("id", "bars");
-      newBars.setAttribute("width", "640");
-      newBars.setAttribute("height", "740");
-      newBars.setAttribute("viewbox", "0 0 640 740");
-      document.getElementById("bars-container").appendChild(newBars);
-    });
+    bootstrapBars(crashesPerModel, removeBars);
   };
 
   btn.addEventListener("click", restart);

@@ -1,6 +1,8 @@
-.bars-container svg {
-  width: 100%;
-  height: auto;
+.bars-container svg,
+#bars {
+  width: auto;
+  height: 100%;
+  margin: 0 auto;
 }
 
 .bar {
