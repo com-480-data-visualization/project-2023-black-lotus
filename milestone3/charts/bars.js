@@ -152,6 +152,7 @@ export default async function bootstrapBars(data, cleanup) {
   const svg = d3.select("#bars");
   const width = +svg.attr("width");
   const height = +svg.attr("height");
+  console.log(height);
 
   const BAR_COUNT = 10;
   const DURATION = 50;

@@ -1,10 +1,12 @@
 body {
   overflow-x: hidden;
 }
+
 .grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   margin-bottom: 2rem;
+  align-items: center;
 }
 
 .big-60 {
@@ -50,80 +52,76 @@ body {
   }
 }
 
-.btns {
-  width: 150px;
-  margin: 0 auto;
-  display: inline;
-}
-
-.radio-btns {
-  width: 250px;
-  margin: 0 auto;
-  display: inline;
-}
-
-
 .quote-text {
-  position: absolute;
-  top: 90%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  margin: 0 auto;
+  backdrop-filter: blur(10px);
+  padding: 10px;
+  border-radius: 10px;
+  color: var(--contrast);
 }
 
 .title-text {
-  position: absolute;
-  top: 7%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: black;
+  margin: 0 auto;
+  color: var(--background-color);
 }
 
-.title-container {
-  top: 0px;
-  height: auto;
-  position: relative;
-  text-align: center;
+.title-image {
+  background: url("../images/plane-crash.jpg");
+  background-size: cover;
+  background-position: 10%;
 }
 
-.intro-container {
-  top: 20px;
-  height: 600px;
-  position: relative;
+.title-text-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: calc(80vh - var(--spacing));
+}
+
+.text-container {
+  max-width: 576px;
+  margin: 0 auto;
   text-align: center;
 }
 
 .title-image {
   width: 100%;
 }
-
-.intro {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+.container-full {
+  width: 100vw;
+  min-height: 100vh;
+  margin: 0 auto;
+  overflow-y: visible;
 }
 
-.question-container {
-
-  grid-column: 1 / 6;
-  width: 100%;
-  height: 1000px;
-  position: relative;
-  text-align: center;
+section.container-full {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--spacing);
 }
 
-.question-title {
-  position: absolute;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+.model-inputs {
+  display: flex;
+  align-items: center;
 }
 
-.question-text {
-  position: absolute;
-  top: 60%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+.model-select {
+  flex: 3 3 100px;
+}
+
+.radio-btns {
+  flex: 2 2 250px;
+  margin: var(--spacing);
+}
+
+.radio-btns input {
+  margin: 0 auto;
+}
+
+.btns {
+  flex: 1 1 30px;
+  margin: 0;
 }
 
 #popup {
