@@ -5,7 +5,6 @@ body {
 .grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  margin-bottom: 2rem;
   align-items: center;
 }
 
@@ -98,7 +97,7 @@ section.container-full {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: var(--spacing);
+  padding: calc(3 * var(--spacing));
 }
 
 .model-inputs {
