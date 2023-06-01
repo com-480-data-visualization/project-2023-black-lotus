@@ -162,7 +162,7 @@ export default async function bootstrapBars(data, cleanup) {
   const height = +svg.attr("height");
 
   const BAR_COUNT = 10;
-  const DURATION = 50;
+  const DURATION = 200;
   const FRAME_COUNT = 10;
   const START_YEAR = 1982;
   const END_YEAR = 2022;

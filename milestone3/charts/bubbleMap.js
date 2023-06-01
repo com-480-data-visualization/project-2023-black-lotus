@@ -180,42 +180,36 @@ function initializeCountyCenters(counties) {
 }
 
 function updateCounties(counties, data) {
-  var selectedState = document.getElementById("selected-state-monthly");
-  const svg = d3.select("#monthly-data");
+  const crashesPerCounty = data.reduce((bins, crash) => {
+    if (crash.CountyCode in bins) {
+      bins[crash.CountyCode] = bins[crash.CountyCode] + 1;
+    } else {
+      bins[crash.CountyCode] = 1;
+    }
+    return bins;
+  }, {});
+
+  counties.features = counties.features.map((county) => {
+    county.properties.crashCount = crashesPerCounty[county.id];
+    return county;
+  });
+
+  let sorted = counties.features
+    .filter((county) => county.properties.crashCount)
+    .sort((a, b) => {
+      return b.properties.crashCount - a.properties.crashCount;
+    });
+
+  var selectedState = document.getElementById("selected-state-county");
+  const svg = d3.select("#county-data");
   if (clickedState === defaultState) {
     selectedState.innerText = "";
     svg.selectAll("*").remove();
   } else {
     svg.selectAll("*").remove();
     selectedState.innerText =
-      "Monthly data for " + STATE_CODE_TO_NAME[clickedState] + ":";
-    const months = {
-      1: "January",
-      2: "February",
-      3: "March",
-      4: "April",
-      5: "May",
-      6: "June",
-      7: "July",
-      8: "August",
-      9: "September",
-      10: "October",
-      11: "November",
-      12: "December",
-    };
-    let maxVal = 0;
-    let crashesPerMonth = data.reduce((crashesPerMonth, crash) => {
-      const crashMonth = crash["Event.Month"];
-      if (crashMonth in crashesPerMonth) {
-        crashesPerMonth[crashMonth].crashes += 1;
-      } else {
-        crashesPerMonth[crashMonth] = {
-          crashes: 1,
-        };
-      }
-      maxVal = Math.max(maxVal, crashesPerMonth[crashMonth].crashes);
-      return crashesPerMonth;
-    }, {});
+      "County data for " + STATE_CODE_TO_NAME[clickedState] + ":";
+    const num = 10;
 
     const width = +svg.attr("width");
     const height = +svg.attr("height");
@@ -223,12 +217,13 @@ function updateCounties(counties, data) {
     const space = 10;
     const xOffset = 30;
     const yOffset = 100;
+    const maxVal = sorted[0].properties.crashCount;
 
-    const barWidth = (width - xOffset - 11 * space) / 12;
+    const barWidth = (width - xOffset - (num - 1) * space) / num;
 
     const x = d3
       .scaleLinear()
-      .domain([1, 12])
+      .domain([1, num])
       .range([xOffset, width - barWidth - 20]);
     const y = d3
       .scaleLinear()
@@ -245,19 +240,20 @@ function updateCounties(counties, data) {
     svg
       .append("g")
       .selectAll("rect")
-      .data(Array.from(Object.entries(crashesPerMonth)))
+      .data(sorted.slice(0, num - 1))
       .enter()
       .append("rect")
       .classed("monthly-bar", true)
       .attr("x", 1)
-      .attr("transform", function (d) {
-        return "translate(" + x(d[0]) + "," + y(d[1].crashes) + ")";
+      .attr("transform", function (d, i) {
+        console.log(d);
+        return "translate(" + x(i + 1) + "," + y(d.properties.crashCount) + ")";
       })
       .attr("width", function (d) {
         return barWidth;
       })
       .attr("height", function (d) {
-        return height - yOffset - y(d[1].crashes);
+        return height - yOffset - y(d.properties.crashCount);
       });
 
     svg
@@ -268,32 +264,19 @@ function updateCounties(counties, data) {
     svg
       .append("g")
       .selectAll("text")
-      .data(Array.from(Object.entries(months)))
+      .data(sorted.slice(0, num - 1))
       .enter()
       .append("text")
-      .attr("x", (d, i) => x(d[0]))
+      .attr("x", (d, i) => x(i + 1))
       .attr("y", (d, i) => height - yOffset / 2)
       .attr("font-size", "0.8rem")
       .attr(
         "transform",
-        (d, i) => `rotate(45,${x(d[0]) + barWidth / 2},${height - yOffset / 2})`
+        (d, i) =>
+          `rotate(45,${x(i + 1) + barWidth / 2},${height - yOffset / 2})`
       )
-      .text((d) => months[d[0]]);
+      .text((d) => d.properties.name);
   }
-
-  const crashesPerCounty = data.reduce((bins, crash) => {
-    if (crash.CountyCode in bins) {
-      bins[crash.CountyCode] = bins[crash.CountyCode] + 1;
-    } else {
-      bins[crash.CountyCode] = 1;
-    }
-    return bins;
-  }, {});
-
-  counties.features = counties.features.map((county) => {
-    county.properties.crashCount = crashesPerCounty[county.id];
-    return county;
-  });
 }
 
 export default async function drawBubbleMap(data, us, cleanup) {
