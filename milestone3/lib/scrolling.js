@@ -1,4 +1,19 @@
 import { debounce } from "./debounce";
+import "../assets/css/scroll.css";
+
+function changeCurrentContainer(
+  currentContainer,
+  scrollBubbles,
+  containers,
+  newValueGenerator
+) {
+  scrollBubbles[currentContainer].classList.remove("active");
+  currentContainer = newValueGenerator(currentContainer);
+  containers[currentContainer].scrollIntoView();
+  scrollBubbles[currentContainer].classList.add("active");
+
+  return currentContainer;
+}
 
 export function initializeScrolling() {
   let containers = Array.from(
@@ -7,20 +22,48 @@ export function initializeScrolling() {
   let currentContainer = Math.floor(
     (window.scrollY || document.documentElement.scrollTop) / window.innerHeight
   );
-  console.log(currentContainer);
+
+  const scrollBubblesContainer = document.getElementsByClassName(
+    "scroll-bubbles-container"
+  )[0];
+
+  const scrollBubbles = containers.map((container, index) => {
+    let bubble = document.createElement("div");
+    bubble.classList.add("scroll-bubble");
+    if (index == currentContainer) {
+      bubble.classList.add("active");
+    }
+    scrollBubblesContainer.appendChild(bubble);
+    bubble.addEventListener("click", (event) => {
+      currentContainer = changeCurrentContainer(
+        currentContainer,
+        scrollBubbles,
+        containers,
+        () => index
+      );
+    });
+    return bubble;
+  });
 
   function onWheel(event) {
     event.preventDefault();
     event.stopPropagation();
-    console.log(event);
-    currentContainer =
-      event.deltaY > 0 ? currentContainer + 1 : currentContainer - 1;
-    if (currentContainer < 0) {
-      currentContainer = containers.length - 1;
-    } else if (currentContainer >= containers.length) {
-      currentContainer = 0;
-    }
-    containers[currentContainer].scrollIntoView();
+    currentContainer = changeCurrentContainer(
+      currentContainer,
+      scrollBubbles,
+      containers,
+      (containerIndex) => {
+        containerIndex =
+          event.deltaY > 0 ? containerIndex + 1 : containerIndex - 1;
+        if (containerIndex < 0) {
+          containerIndex = containers.length - 1;
+        } else if (containerIndex >= containers.length) {
+          currentContainer = 0;
+        }
+
+        return containerIndex;
+      }
+    );
   }
   window.addEventListener("wheel", debounce(onWheel, 100));
 }
