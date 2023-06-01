@@ -20,6 +20,7 @@ import bootstrapSpiral from "./charts/spiral";
 import bootstrapBars from "./charts/bars";
 import drawAirlineMap from "./charts/airlines";
 import { removeLoader } from "./lib/loader";
+import { initializeScrolling } from "./lib/scrolling";
 
 async function initializeBubbleMap(us) {
   let dataLatLon = await loadDataLatLon();
@@ -190,6 +191,7 @@ async function initializeDocument() {
   loadAllData().then((data) => {
     initializeBars(data);
   });
+  initializeScrolling();
 }
 
 window.addEventListener("DOMContentLoaded", initializeDocument);
