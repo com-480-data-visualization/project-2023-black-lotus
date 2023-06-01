@@ -95,7 +95,107 @@ function filterData(data) {
     );
 }
 
-async function updateMap(svg, projection, counties, width, height) {
+function showPopup(projection, d) {
+  const svg = d3.select("#map");
+  const width = +svg.attr("width");
+  const height = +svg.attr("height");
+
+  var mypopup = document.getElementById("popup");
+  mypopup.style.display = "block";
+  var mypopupTitle = document.getElementById("popup-title");
+  mypopupTitle.innerText = d.properties.name; //jel ok?
+  mypopupTitle.style.color = "black";
+  var mypopupText = document.getElementById("popup-text");
+
+  mypopup.style.width = "auto";
+
+  mypopupTitle.style.fontSize = "16px";
+  mypopupText.style.fontSize = "12px";
+  mypopupText.style.margin = "0px";
+  mypopupTitle.style.margin = "1px";
+  let crashCount = d.properties.crashCount;
+  if (crashCount) {
+    if (crashCount == 11 || crashCount % 10 != 1) {
+      mypopupText.innerText = crashCount + " accidents";
+    } else {
+      mypopupText.innerText = crashCount + " accident";
+    }
+  } else {
+    mypopupText.innerText = "No accidents";
+  }
+  mypopupText.style.color = "black";
+
+  var mySvg = document.getElementById("map");
+
+  var point = mySvg.createSVGPoint();
+
+  point.x = (projection(d.properties.center)[0] + dx) * scaleVal + width / 2;
+  point.y = (projection(d.properties.center)[1] + dy) * scaleVal + height / 2;
+
+  var screenPoint = point.matrixTransform(mySvg.getScreenCTM());
+
+  mypopup.style.left = screenPoint.x + "px";
+  mypopup.style.top = screenPoint.y + "px";
+}
+
+function hidePopup(d) {
+  var mypopup = document.getElementById("popup");
+  mypopup.style.display = "none";
+}
+
+function addHoveredEffect(d) {
+  const circleSvg = d3.select("#map");
+  const rectangleSvg = d3.select("#county-data");
+  const rectangles = Array.from(rectangleSvg.selectAll("rect")._groups[0]);
+  const targetRectangle = rectangles.find((n) => {
+    return (
+      n.getAttribute("county-name") == d.properties.name &&
+      n.getAttribute("county-center") == d.properties.center
+    );
+  });
+  if (targetRectangle) {
+    targetRectangle.classList.add("active");
+  }
+
+  const circles = Array.from(circleSvg.selectAll("circle")._groups[0]);
+  const targetCircle = circles.find((n) => {
+    return (
+      n.getAttribute("county-name") == d.properties.name &&
+      n.getAttribute("county-center") == d.properties.center
+    );
+  });
+  if (targetCircle) {
+    targetCircle.classList.add("active");
+  }
+}
+
+function removeHoveredEffect(d) {
+  const circleSvg = d3.select("#map");
+  const rectangleSvg = d3.select("#county-data");
+  const rectangles = Array.from(rectangleSvg.selectAll("rect")._groups[0]);
+  const targetRectangle = rectangles.find((n) => {
+    return (
+      n.getAttribute("county-name") == d.properties.name &&
+      n.getAttribute("county-center") == d.properties.center
+    );
+  });
+  if (targetRectangle) {
+    targetRectangle.classList.remove("active");
+  }
+
+  const circles = Array.from(circleSvg.selectAll("circle")._groups[0]);
+  const targetCircle = circles.find((n) => {
+    return (
+      n.getAttribute("county-name") == d.properties.name &&
+      n.getAttribute("county-center") == d.properties.center
+    );
+  });
+  if (targetCircle) {
+    targetCircle.classList.remove("active");
+  }
+}
+
+async function updateMap(svg, projection, counties) {
   svg.selectAll("circle").classed("hover-bubble", false);
   var selectedState = document.getElementById("selected-state");
   if (clickedState === "USA") selectedState.innerText = clickedState;
@@ -112,6 +212,8 @@ async function updateMap(svg, projection, counties, width, height) {
     .append("circle")
     .classed("bubble", true)
     .attr("transform", (c) => `translate(${projection(c.properties.center)})`)
+    .attr("county-name", (c) => c.properties.name)
+    .attr("county-center", (c) => c.properties.center)
     .transition()
     .duration(TRANSITION_DURATION)
     .attr("r", (c) => radius(c.properties.crashCount));
@@ -122,51 +224,17 @@ async function updateMap(svg, projection, counties, width, height) {
     .attr("r", (c) => radius(c.properties.crashCount));
 
   if (clickedState != "USA") {
+    const otherSvg = d3.select("#county-data");
     circles
       .classed("hover-bubble", true)
       .on("mouseover", (event, d) => {
-        var mypopup = document.getElementById("popup");
-        mypopup.style.display = "block";
-        var mypopupTitle = document.getElementById("popup-title");
-        mypopupTitle.innerText = d.properties.name; //jel ok?
-        mypopupTitle.style.color = "black";
-        var mypopupText = document.getElementById("popup-text");
-
-        mypopup.style.width = "auto";
-
-        mypopupTitle.style.fontSize = "16px";
-        mypopupText.style.fontSize = "12px";
-        mypopupText.style.margin = "0px";
-        mypopupTitle.style.margin = "1px";
-        let crashCount = d.properties.crashCount;
-        if (crashCount) {
-          if (crashCount == 11 || crashCount % 10 != 1) {
-            mypopupText.innerText = crashCount + " accidents";
-          } else {
-            mypopupText.innerText = crashCount + " accident";
-          }
-        } else {
-          mypopupText.innerText = "No accidents";
-        }
-        mypopupText.style.color = "black";
-
-        var mySvg = document.getElementById("map");
-
-        var point = mySvg.createSVGPoint();
-
-        point.x =
-          (projection(d.properties.center)[0] + dx) * scaleVal + width / 2;
-        point.y =
-          (projection(d.properties.center)[1] + dy) * scaleVal + height / 2;
-
-        var screenPoint = point.matrixTransform(mySvg.getScreenCTM());
-
-        mypopup.style.left = screenPoint.x + "px";
-        mypopup.style.top = screenPoint.y + "px";
+        showPopup(projection, d);
+        addHoveredEffect(d);
       })
       .on("mouseout", (event, d) => {
-        var mypopup = document.getElementById("popup");
-        mypopup.style.display = "none";
+        d3.select(this).classed("active", false);
+        hidePopup(d);
+        removeHoveredEffect(d);
       });
   }
 }
@@ -179,7 +247,7 @@ function initializeCountyCenters(counties) {
   });
 }
 
-function updateCounties(counties, data) {
+function updateCounties(projection, counties, data) {
   const crashesPerCounty = data.reduce((bins, crash) => {
     if (crash.CountyCode in bins) {
       bins[crash.CountyCode] = bins[crash.CountyCode] + 1;
@@ -207,9 +275,15 @@ function updateCounties(counties, data) {
     svg.selectAll("*").remove();
   } else {
     svg.selectAll("*").remove();
+    const num = Math.min(sorted.length, 10);
+    if (num == 0) {
+      selectedState.innerText =
+        "No county data for " + STATE_CODE_TO_NAME[clickedState] + ".";
+      return;
+    }
+
     selectedState.innerText =
       "County data for " + STATE_CODE_TO_NAME[clickedState] + ":";
-    const num = 10;
 
     const width = +svg.attr("width");
     const height = +svg.attr("height");
@@ -240,10 +314,10 @@ function updateCounties(counties, data) {
     svg
       .append("g")
       .selectAll("rect")
-      .data(sorted.slice(0, num - 1))
+      .data(sorted.slice(0, num))
       .enter()
       .append("rect")
-      .classed("monthly-bar", true)
+      .classed("county-bar", true)
       .attr("x", 1)
       .attr("transform", function (d, i) {
         console.log(d);
@@ -254,6 +328,16 @@ function updateCounties(counties, data) {
       })
       .attr("height", function (d) {
         return height - yOffset - y(d.properties.crashCount);
+      })
+      .attr("county-name", (d) => d.properties.name)
+      .attr("county-center", (d) => d.properties.center)
+      .on("mouseover", (event, d) => {
+        showPopup(projection, d);
+        addHoveredEffect(d);
+      })
+      .on("mouseout", (event, d) => {
+        hidePopup(d);
+        removeHoveredEffect(d);
       });
 
     svg
@@ -264,7 +348,7 @@ function updateCounties(counties, data) {
     svg
       .append("g")
       .selectAll("text")
-      .data(sorted.slice(0, num - 1))
+      .data(sorted.slice(0, num))
       .enter()
       .append("text")
       .attr("x", (d, i) => x(i + 1))
@@ -292,7 +376,6 @@ export default async function drawBubbleMap(data, us, cleanup) {
   cleanup();
   const counties = topojson.feature(us, us.objects.counties);
   initializeCountyCenters(counties);
-  updateCounties(counties, data);
   const g = drawUSA(
     svg,
     projection,
@@ -307,26 +390,28 @@ export default async function drawBubbleMap(data, us, cleanup) {
       dy = newDy;
       console.log(d);
       clickedState = NAME_TO_STATE_CODE[d.properties.name];
-      updateCounties(counties, filterData(data));
-      updateMap(g, projection, counties, width, height);
+      updateCounties(projection, counties, filterData(data));
+      updateMap(g, projection, counties);
     },
     (g, event, d) => {
       scaleVal = 1;
       clickedState = defaultState;
-      updateCounties(counties, filterData(data));
-      updateMap(g, projection, counties, width, height);
+      updateCounties(projection, counties, filterData(data));
+      updateMap(g, projection, counties);
     }
   );
+  updateCounties(projection, counties, data);
 
-  updateMap(g, projection, counties, width, height);
+  updateMap(g, projection, counties);
 
   return (newData) => {
     updateCounties(
+      projection,
       counties,
       newData.filter((crash) =>
         clickedState === defaultState ? true : crash["State"] === clickedState
       )
     );
-    updateMap(g, projection, counties, width, height);
+    updateMap(g, projection, counties);
   };
 }

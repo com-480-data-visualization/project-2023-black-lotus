@@ -23,6 +23,14 @@
   pointer-events: auto;
 }
 
+.hover-bubble.active {
+  fill: red;
+  opacity: 0.5;
+  stroke: rgba(255, 255, 255, 0.8);
+  stroke-width: 0.5;
+  pointer-events: auto;
+}
+
 .state-line {
   fill: var(--contrast);
   stroke: var(--background-color);
@@ -40,6 +48,10 @@
   fill: var(--contrast);
 }
 
-.monthly-bar {
+.county-bar {
   fill: var(--primary);
+}
+
+.county-bar.active {
+  fill: rgb(236, 98, 98);
 }
