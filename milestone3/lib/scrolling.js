@@ -58,7 +58,7 @@ export function initializeScrolling() {
         if (containerIndex < 0) {
           containerIndex = containers.length - 1;
         } else if (containerIndex >= containers.length) {
-          currentContainer = 0;
+          containerIndex = 0;
         }
 
         return containerIndex;
