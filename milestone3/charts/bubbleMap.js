@@ -197,9 +197,9 @@ function removeHoveredEffect(d) {
 
 async function updateMap(svg, projection, counties) {
   svg.selectAll("circle").classed("hover-bubble", false);
-  var selectedState = document.getElementById("selected-state");
-  if (clickedState === "USA") selectedState.innerText = clickedState;
-  else selectedState.innerText = STATE_CODE_TO_NAME[clickedState];
+  // var selectedState = document.getElementById("selected-state");
+  // if (clickedState === "USA") selectedState.innerText = clickedState;
+  // else selectedState.innerText = STATE_CODE_TO_NAME[clickedState];
   const domain = [
     0,
     d3.max(counties.features.map((f) => f.properties.crashCount)),

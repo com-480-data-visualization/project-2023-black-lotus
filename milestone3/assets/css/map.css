@@ -1,6 +1,29 @@
+.bubble-map-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.bubble-map-container h4 {
+  flex: 0 0 50px;
+}
+
+.bubble-map-container svg {
+  flex: 1 1 200px;
+}
+
+.map-container {
+  flex: 1 1 200px;
+}
+
 .map-container svg {
-  width: 100%;
-  height: auto;
+  width: auto;
+  height: 100%;
+}
+
+.map-container h3,
+h4 {
+  margin: 0;
 }
 
 .map-filtering-container h3 {

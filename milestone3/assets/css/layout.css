@@ -17,6 +17,10 @@ body {
   grid-column: 4 / 6;
 }
 
+.small-40 p {
+  margin: 0;
+}
+
 .grid.reverse {
   grid-auto-flow: dense;
 }
@@ -97,7 +101,7 @@ section.container-full {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: calc(3 * var(--spacing));
+  padding: var(--spacing) calc(3 * var(--spacing));
 }
 
 .model-inputs {
