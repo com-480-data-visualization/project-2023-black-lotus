@@ -64,6 +64,9 @@ const STATE_CODE_TO_NAME = {
   WI: "Wisconsin",
   WY: "Wyoming",
 };
+const NAME_TO_STATE_CODE = Object.fromEntries(
+  Object.entries(STATE_CODE_TO_NAME).map(([key, value]) => [value, key])
+);
 
 function initializeStateCenters(states) {
   const path = d3.geoPath();
@@ -213,6 +216,7 @@ export default function drawAirlineMap(data, us, airline, cleanup) {
     svg,
     projection,
     us,
+    true,
     false,
     (event, d) => {
       console.log(d);
@@ -233,9 +237,6 @@ export default function drawAirlineMap(data, us, airline, cleanup) {
       mypopupTitle.innerText = d.properties.name; //jel ok?
       mypopupTitle.style.color = "black";
       var mypopupText = document.getElementById("popup-text");
-      const NAME_TO_STATE_CODE = Object.fromEntries(
-        Object.entries(STATE_CODE_TO_NAME).map(([key, value]) => [value, key])
-      );
       const stateCode = NAME_TO_STATE_CODE[d.properties.name];
       const airline = document.getElementById("airline-select").value;
       if (stateCode in data[airline]) {
@@ -243,12 +244,12 @@ export default function drawAirlineMap(data, us, airline, cleanup) {
           data[airline][stateCode] == 11 ||
           data[airline][stateCode] % 10 != 1
         ) {
-          mypopupText.innerText = data[airline][stateCode] + " crashes";
+          mypopupText.innerText = data[airline][stateCode] + " accidents";
         } else {
-          mypopupText.innerText = data[airline][stateCode] + " crash";
+          mypopupText.innerText = data[airline][stateCode] + " accident";
         }
       } else {
-        mypopupText.innerText = "No crashes";
+        mypopupText.innerText = "No accidents";
       }
 
       mypopup.style.width = "auto";
@@ -271,7 +272,7 @@ export default function drawAirlineMap(data, us, airline, cleanup) {
       mypopup.style.left = screenPoint.x + 15 + "px";
       mypopup.style.top = screenPoint.y + 15 + "px";
     },
-    (event) => {
+    (event, d) => {
       const links = svg.selectAll(".link");
 
       svg.selectAll(".link").attr("stroke-opacity", 0.3);
@@ -286,7 +287,9 @@ export default function drawAirlineMap(data, us, airline, cleanup) {
       }
       var mypopup = document.getElementById("popup");
       mypopup.style.display = "none";
-    }
+    },
+    (event, d) => {},
+    (event, d) => {}
   );
   const states = topojson.feature(us, us.objects.states);
   initializeStateCenters(states);

@@ -6,7 +6,6 @@
 }
 
 .bar {
-  fill: var(--primary);
   fill-opacity: 1;
 }
 

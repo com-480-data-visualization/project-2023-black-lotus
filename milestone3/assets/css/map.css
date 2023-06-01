@@ -15,6 +15,14 @@
   pointer-events: none;
 }
 
+.hover-bubble {
+  fill: var(--primary);
+  opacity: 0.5;
+  stroke: rgba(255, 255, 255, 0.8);
+  stroke-width: 0.5;
+  pointer-events: auto;
+}
+
 .state-line {
   fill: var(--contrast);
   stroke: var(--background-color);
@@ -30,4 +38,8 @@
 
 .state {
   fill: var(--contrast);
+}
+
+.monthly-bar {
+  fill: var(--primary);
 }

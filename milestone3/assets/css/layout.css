@@ -137,3 +137,7 @@ section.container-full {
   display: none;
   pointer-events: none;
 }
+
+#selected-state {
+  text-align: center;
+}

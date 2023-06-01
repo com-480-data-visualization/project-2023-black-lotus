@@ -91,7 +91,7 @@
           <h3>Crashes per month</h3>
           <p>
             Our first visualization aims to give an overview of temporal trends
-            in aviation. The dendrogram to the right illustrates how the number
+            in aviation. The condegram to the right illustrates how the number
             of crashes changed over time, with the height of the bar
             corresponding to the number of crashes in the given month of the
             given year.
@@ -230,6 +230,7 @@
               fill="#000033"
             />
           </svg>
+          <h3 id="selected-state"></h3>
           <svg id="map" width="740" height="500" viewbox="0 0 740 500"></svg>
         </div>
         <div class="small-40 map-filtering-container">
@@ -263,15 +264,16 @@
             Our third visualization aims to give an overview of geographical
             trends in crashes. The map on the right depicts the relative number
             of crashes per county of each state. We can see that most of these
-            crashes occur in California, Texas, and Florida. By zooming in or
-            clicking on a state, we can explore how these crashes are
-            distributed in each of the states. For example, most of the crashes
-            in California occurred in the vicinity of Los Angeles.
+            crashes occur in California, Texas, and Florida. By clicking on a state, 
+            we can explore how these crashes are distributed in each of the states. 
+            For example, most of the crashes in California occurred in the vicinity of Los Angeles.
             <br />
             <br />
             We can also observe that crashes are most frequent during the
             "takeoff" phase. While they are very rare during the "taxi" phase.
           </p>
+          <h4 id="selected-state-monthly"></h4>
+          <svg id="monthly-data" width="740" height="320" viewbox="0 0 740 320"></svg>
         </div>
       </div>
     </section>

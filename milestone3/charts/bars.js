@@ -3,7 +3,7 @@ import "../assets/css/bars.css";
 
 let timepoints = [];
 
-function bars(svg, prev, next, x, y, barCount) {
+function bars(svg, prev, next, x, y, color, barCount) {
   let g = svg.append("g");
   return ([_, bars], transition) => {
     let barSelection = g
@@ -14,6 +14,7 @@ function bars(svg, prev, next, x, y, barCount) {
       .enter()
       .append("rect")
       .attr("class", "bar")
+      .attr("fill", (d) => color[d.model])
       .attr("height", y.bandwidth())
       .attr("x", x(0))
       .attr("y", (d) => y((prev.get(d) || d).rank))
@@ -149,6 +150,13 @@ export default async function bootstrapBars(data, cleanup) {
   timepoints = [];
   cleanup();
   const models = Object.keys(data);
+  let cols = d3.scaleOrdinal(d3.schemeTableau10);
+  let color = new Map();
+  let i = 0;
+  for (let model of models) {
+    color[model] = cols(i);
+    i = (i + 1) % 20;
+  }
   const svg = d3.select("#bars");
   const width = +svg.attr("width");
   const height = +svg.attr("height");
@@ -213,7 +221,7 @@ export default async function bootstrapBars(data, cleanup) {
     ])
     .padding(PADDING);
 
-  const updateBars = bars(svg, previous, next, x, y, BAR_COUNT);
+  const updateBars = bars(svg, previous, next, x, y, color, BAR_COUNT);
   const updateAxis = axis(svg, barHeight, BAR_COUNT, x, y, MARGIN, width);
   const updateLabels = labels(svg, BAR_COUNT, x, y, previous, next);
   const updateTicker = ticker(svg, barHeight, BAR_COUNT, width, MARGIN);

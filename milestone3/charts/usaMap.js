@@ -5,9 +5,12 @@ export default function drawUSA(
   svg,
   projection,
   us,
-  zoomable = false,
+  hoverable = false,
+  clickable = false,
   onMouseEnter = (event, d) => {},
-  onMouseLeave = (event) => {}
+  onMouseLeave = (event, d) => {},
+  onMouseClick = (g, event, d, scaleVal, dx, dy) => {},
+  onMouseDoubleClick = (g, event, d) => {}
 ) {
   const width = +svg.attr("width");
   const height = +svg.attr("height");
@@ -23,20 +26,29 @@ export default function drawUSA(
     .attr("d", path)
     .attr("data-state", (d) => d.properties.name.toLowerCase());
 
-  statelines.on("mouseenter", function (event, d) {
-    statelines.attr("opacity", 0.5);
-    d3.select(this).classed("active", true);
-    d3.select(this).attr("opacity", 1);
-    onMouseEnter(event, d);
+  /*statelines.on("mouseenter", function (event, d) {
+    d3.select(this).classed("hovered", true);
   });
   statelines.on("mouseleave", function (event, d) {
-    statelines.attr("opacity", 1);
-    statelines.attr("stroke-width", 0.2);
-    d3.select(this).classed("active", false);
-    onMouseLeave(event);
-  });
+    d3.select(this).classed("hovered", false);
+  });*/
 
-  if (zoomable) {
+  if (hoverable) {
+    statelines.on("mouseenter", function (event, d) {
+      statelines.attr("opacity", 0.5);
+      d3.select(this).classed("active", true);
+      d3.select(this).attr("opacity", 1);
+      onMouseEnter(event, d);
+    });
+    statelines.on("mouseleave", function (event, d) {
+      statelines.attr("opacity", 1);
+      statelines.attr("stroke-width", 0.2);
+      d3.select(this).classed("active", false);
+      onMouseLeave(event, d);
+    });
+  }
+
+  if (clickable) {
     const zoom = d3
       .zoom()
       .scaleExtent([1, 8])
@@ -46,8 +58,17 @@ export default function drawUSA(
         g.attr("stroke-width", 1 / transform.k);
       });
     statelines.on("click", function (event, d) {
+      if (d3.select(this).attr("opacity") == 0) return;
+      statelines.attr("opacity", 0);
+      d3.select(this).attr("opacity", 1);
       const [[x0, y0], [x1, y1]] = path.bounds(d);
+      const dx = -(x0 + x1) / 2;
+      const dy = -(y0 + y1) / 2;
       event.stopPropagation();
+      const scaleVal = Math.min(
+        8,
+        0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height)
+      );
       svg
         .transition()
         .duration(750)
@@ -55,16 +76,14 @@ export default function drawUSA(
           zoom.transform,
           d3.zoomIdentity
             .translate(width / 2, height / 2)
-            .scale(
-              Math.min(8, 0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height))
-            )
-            .translate(-(x0 + x1) / 2, -(y0 + y1) / 2),
+            .scale(scaleVal)
+            .translate(dx, dy),
           d3.pointer(event, svg.node())
         );
+      onMouseClick(g, event, d, scaleVal, dx, dy);
     });
-    /*svg.call(zoom);*/
-    svg.on("dblclick", function () {
-      console.log("dbl");
+    svg.on("dblclick", function (event, d) {
+      statelines.attr("opacity", 1);
       svg
         .transition()
         .duration(750)
@@ -73,6 +92,7 @@ export default function drawUSA(
           d3.zoomIdentity,
           d3.zoomTransform(svg.node()).invert([width / 2, height / 2])
         );
+      onMouseDoubleClick(g, event, d);
     });
   }
 
