@@ -4,6 +4,7 @@ import "./assets/css/map.css";
 import "./assets/css/ring.css";
 import "./assets/css/layout.css";
 import "./assets/css/loader.css";
+import "./assets/css/team.css";
 import * as d3 from "d3";
 import {
   loadDataLatLon,
