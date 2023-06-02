@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import * as topojson from "topojson";
-import drawUSA from "./usaMap";
+import { drawUSA } from "./usaMap";
 import "../assets/css/airline.css";
 
 const MAP_SCALE = 800;

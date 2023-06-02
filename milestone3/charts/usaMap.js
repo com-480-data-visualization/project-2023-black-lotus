@@ -1,7 +1,20 @@
 import * as d3 from "d3";
 import * as topojson from "topojson";
 
-export default function drawUSA(
+let scaleVal = 1;
+let dx = 0;
+let dy = 0;
+
+export function getMapProperties() {
+  let mapProperties = {
+    dx: dx,
+    dy: dy,
+    scaleVal: scaleVal,
+  };
+  return mapProperties;
+}
+
+export function drawUSA(
   svg,
   projection,
   us,
@@ -9,8 +22,8 @@ export default function drawUSA(
   clickable = false,
   onMouseEnter = (event, d) => {},
   onMouseLeave = (event, d) => {},
-  onMouseClick = (g, event, d, scaleVal, dx, dy) => {},
-  onMouseDoubleClick = (g, event, d) => {}
+  onMouseClick = (event, d) => {},
+  onMouseDoubleClick = (event, d) => {}
 ) {
   const width = +svg.attr("width");
   const height = +svg.attr("height");
@@ -25,13 +38,6 @@ export default function drawUSA(
     .classed("state-line", true)
     .attr("d", path)
     .attr("data-state", (d) => d.properties.name.toLowerCase());
-
-  /*statelines.on("mouseenter", function (event, d) {
-    d3.select(this).classed("hovered", true);
-  });
-  statelines.on("mouseleave", function (event, d) {
-    d3.select(this).classed("hovered", false);
-  });*/
 
   if (hoverable) {
     statelines.on("mouseenter", function (event, d) {
@@ -62,13 +68,13 @@ export default function drawUSA(
       statelines.attr("opacity", 0);
       d3.select(this).attr("opacity", 1);
       const [[x0, y0], [x1, y1]] = path.bounds(d);
-      const dx = -(x0 + x1) / 2;
-      const dy = -(y0 + y1) / 2;
-      event.stopPropagation();
-      const scaleVal = Math.min(
+      dx = -(x0 + x1) / 2;
+      dy = -(y0 + y1) / 2;
+      scaleVal = Math.min(
         8,
         0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height)
       );
+      event.stopPropagation();
       svg
         .transition()
         .duration(750)
@@ -80,10 +86,13 @@ export default function drawUSA(
             .translate(dx, dy),
           d3.pointer(event, svg.node())
         );
-      onMouseClick(g, event, d, scaleVal, dx, dy);
+      onMouseClick(event, d, scaleVal, dx, dy);
     });
     svg.on("dblclick", function (event, d) {
       statelines.attr("opacity", 1);
+      dx = 0;
+      dy = 0;
+      scaleVal = 1;
       svg
         .transition()
         .duration(750)
@@ -92,7 +101,7 @@ export default function drawUSA(
           d3.zoomIdentity,
           d3.zoomTransform(svg.node()).invert([width / 2, height / 2])
         );
-      onMouseDoubleClick(g, event, d);
+      onMouseDoubleClick(event, d);
     });
   }
 

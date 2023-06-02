@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import * as topojson from "topojson";
-import drawUSA from "./usaMap";
+import { getMapProperties, drawUSA } from "./usaMap";
 
 const MAP_SCALE = 800;
 const MAX_BUBBLE_RADIUS = 20;
@@ -71,9 +71,6 @@ const NAME_TO_STATE_CODE = Object.fromEntries(
 );
 const defaultState = "USA";
 let clickedState = defaultState;
-let scaleVal = 1;
-let dx = 0;
-let dy = 0;
 
 function filterData(data) {
   const rangeInput = document.querySelectorAll(".range-input input");
@@ -96,6 +93,7 @@ function filterData(data) {
 }
 
 function showPopup(projection, d) {
+  let mapProperties = getMapProperties();
   const svg = d3.select("#map");
   const width = +svg.attr("width");
   const height = +svg.attr("height");
@@ -129,8 +127,14 @@ function showPopup(projection, d) {
 
   var point = mySvg.createSVGPoint();
 
-  point.x = (projection(d.properties.center)[0] + dx) * scaleVal + width / 2;
-  point.y = (projection(d.properties.center)[1] + dy) * scaleVal + height / 2;
+  point.x =
+    (projection(d.properties.center)[0] + mapProperties["dx"]) *
+      mapProperties["scaleVal"] +
+    width / 2;
+  point.y =
+    (projection(d.properties.center)[1] + mapProperties["dy"]) *
+      mapProperties["scaleVal"] +
+    height / 2;
 
   var screenPoint = point.matrixTransform(mySvg.getScreenCTM());
 
@@ -195,11 +199,8 @@ function removeHoveredEffect(d) {
   }
 }
 
-async function updateMap(svg, projection, counties) {
+async function updateMap(svg, projection, counties, scaleVal) {
   svg.selectAll("circle").classed("hover-bubble", false);
-  // var selectedState = document.getElementById("selected-state");
-  // if (clickedState === "USA") selectedState.innerText = clickedState;
-  // else selectedState.innerText = STATE_CODE_TO_NAME[clickedState];
   const domain = [
     0,
     d3.max(counties.features.map((f) => f.properties.crashCount)),
@@ -239,29 +240,7 @@ async function updateMap(svg, projection, counties) {
   }
 }
 
-function initializeCountyCenters(counties) {
-  const path = d3.geoPath();
-  counties.features = counties.features.map((county) => {
-    county.properties.center = path.centroid(county);
-    return county;
-  });
-}
-
-function updateCounties(projection, counties, data) {
-  const crashesPerCounty = data.reduce((bins, crash) => {
-    if (crash.CountyCode in bins) {
-      bins[crash.CountyCode] = bins[crash.CountyCode] + 1;
-    } else {
-      bins[crash.CountyCode] = 1;
-    }
-    return bins;
-  }, {});
-
-  counties.features = counties.features.map((county) => {
-    county.properties.crashCount = crashesPerCounty[county.id];
-    return county;
-  });
-
+function drawCountyBarplot(counties, projection) {
   let sorted = counties.features
     .filter((county) => county.properties.crashCount)
     .sort((a, b) => {
@@ -288,9 +267,9 @@ function updateCounties(projection, counties, data) {
     const width = +svg.attr("width");
     const height = +svg.attr("height");
 
-    const space = 10;
-    const xOffset = 30;
-    const yOffset = 100;
+    const space = 20;
+    const xOffset = 50;
+    const yOffset = 70;
     const maxVal = sorted[0].properties.crashCount;
 
     const barWidth = (width - xOffset - (num - 1) * space) / num;
@@ -298,13 +277,13 @@ function updateCounties(projection, counties, data) {
     const x = d3
       .scaleLinear()
       .domain([1, num])
-      .range([xOffset, width - barWidth - 20]);
+      .range([xOffset, width - barWidth]);
     const y = d3
       .scaleLinear()
       .domain([0, maxVal])
-      .range([height - yOffset, 50]);
+      .range([height - yOffset, 20]);
 
-    const yAxisTicks = y.ticks().filter((tick) => Number.isInteger(tick));
+    const yAxisTicks = y.ticks(4).filter((tick) => Number.isInteger(tick));
 
     const yAxis = d3
       .axisLeft(y)
@@ -343,7 +322,7 @@ function updateCounties(projection, counties, data) {
     svg
       .append("g")
       .attr("transform", "translate(" + xOffset + ",0)")
-      .call(yAxis);
+      .call(yAxis.ticks(5));
 
     svg
       .append("g")
@@ -352,15 +331,39 @@ function updateCounties(projection, counties, data) {
       .enter()
       .append("text")
       .attr("x", (d, i) => x(i + 1))
-      .attr("y", (d, i) => height - yOffset / 2)
+      .attr("y", (d, i) => height - yOffset + 10)
       .attr("font-size", "0.8rem")
       .attr(
         "transform",
         (d, i) =>
-          `rotate(45,${x(i + 1) + barWidth / 2},${height - yOffset / 2})`
+          `rotate(${(num - 1) * 3},${x(i + 1)},${height - yOffset + 10})`
       )
       .text((d) => d.properties.name);
   }
+}
+
+function initializeCountyCenters(counties) {
+  const path = d3.geoPath();
+  counties.features = counties.features.map((county) => {
+    county.properties.center = path.centroid(county);
+    return county;
+  });
+}
+
+function updateCounties(projection, counties, data) {
+  const crashesPerCounty = data.reduce((bins, crash) => {
+    if (crash.CountyCode in bins) {
+      bins[crash.CountyCode] = bins[crash.CountyCode] + 1;
+    } else {
+      bins[crash.CountyCode] = 1;
+    }
+    return bins;
+  }, {});
+
+  counties.features = counties.features.map((county) => {
+    county.properties.crashCount = crashesPerCounty[county.id];
+    return county;
+  });
 }
 
 export default async function drawBubbleMap(data, us, cleanup) {
@@ -376,6 +379,8 @@ export default async function drawBubbleMap(data, us, cleanup) {
   cleanup();
   const counties = topojson.feature(us, us.objects.counties);
   initializeCountyCenters(counties);
+  updateCounties(projection, counties, data);
+  console.log(svg);
   const g = drawUSA(
     svg,
     projection,
@@ -384,34 +389,23 @@ export default async function drawBubbleMap(data, us, cleanup) {
     true,
     (event, d) => {},
     (event, d) => {},
-    (g, event, d, newScaleVal, newDx, newDy) => {
-      scaleVal = newScaleVal;
-      dx = newDx;
-      dy = newDy;
-      console.log(d);
+    (event, d) => {
       clickedState = NAME_TO_STATE_CODE[d.properties.name];
-      updateCounties(projection, counties, filterData(data));
-      updateMap(g, projection, counties);
+      update(data);
     },
-    (g, event, d) => {
-      scaleVal = 1;
+    (event, d) => {
       clickedState = defaultState;
-      updateCounties(projection, counties, filterData(data));
-      updateMap(g, projection, counties);
+      update(data);
     }
   );
-  updateCounties(projection, counties, data);
+  updateMap(g, projection, counties, 1);
 
-  updateMap(g, projection, counties);
-
-  return (newData) => {
-    updateCounties(
-      projection,
-      counties,
-      newData.filter((crash) =>
-        clickedState === defaultState ? true : crash["State"] === clickedState
-      )
-    );
-    updateMap(g, projection, counties);
+  let update = (data) => {
+    updateCounties(projection, counties, filterData(data));
+    drawCountyBarplot(counties, projection);
+    let mapProperties = getMapProperties();
+    updateMap(g, projection, counties, mapProperties["scaleVal"]);
   };
+
+  return update;
 }

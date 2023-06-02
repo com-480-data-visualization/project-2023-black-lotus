@@ -47,19 +47,7 @@ async function initializeBubbleMap(us) {
       currentYearSpan.innerText = `${min} - ${max}`;
     },
     ([min, max]) => {
-      updateMap(
-        dataLatLon
-          .filter(
-            (crash) => crash["Event.Year"] >= min && crash["Event.Year"] <= max
-          )
-          .filter((crash) =>
-            phaseSelect.value === "Any"
-              ? true
-              : (crash["Flight.phase"] ?? [""]).includes(
-                  phaseSelect.value.toLowerCase()
-                )
-          )
-      );
+      updateMap(dataLatLon);
     }
   );
   let defaultPhase = "";
@@ -78,19 +66,7 @@ async function initializeBubbleMap(us) {
     const rangeInput = document.querySelectorAll(".range-input input");
     const min = document.querySelectorAll(".range-input input")[0].value;
     const max = document.querySelectorAll(".range-input input")[1].value;
-    updateMap(
-      dataLatLon
-        .filter(
-          (crash) => crash["Event.Year"] >= min && crash["Event.Year"] <= max
-        )
-        .filter((crash) =>
-          event.target.value === "Any"
-            ? true
-            : (crash["Flight.phase"] ?? [""]).includes(
-                event.target.value.toLowerCase()
-              )
-        )
-    );
+    updateMap(dataLatLon);
   });
 }
 
