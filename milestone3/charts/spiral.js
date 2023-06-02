@@ -1,12 +1,14 @@
 import * as d3 from "d3";
 
 function drawSpiral(data, svg, width, height) {
-  const maxRadius = d3.min([width, height]) / 2 - 50;
+  const BAR_HEIGHT = 35;
+  const MIN_RADIUS = 100;
+  const maxRadius = d3.min([width, height]) / 2 - BAR_HEIGHT;
 
   const radius = d3
     .scaleLinear()
     .domain([0, data.length])
-    .range([maxRadius, 100]);
+    .range([maxRadius, MIN_RADIUS]);
 
   const numSpirals = 4;
   const angle = d3
@@ -30,7 +32,10 @@ function drawSpiral(data, svg, width, height) {
   const maxCrashes = d3.max(data, (d) => d.value);
   const spiralLength = spiral.node().getTotalLength();
   const barWidth = spiralLength / data.length - 1;
-  const heightScale = d3.scaleLinear().domain([0, maxCrashes]).range([0, 50]);
+  const heightScale = d3
+    .scaleLinear()
+    .domain([0, maxCrashes])
+    .range([0, BAR_HEIGHT]);
 
   const years = [...new Set(data.map((d) => d.date.getFullYear()))];
   const timeScale = d3.scaleLinear([0, data.length], [0, spiralLength]);
