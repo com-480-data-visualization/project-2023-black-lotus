@@ -44,24 +44,28 @@ function drawSpiral(data, svg, width, height) {
     d3.interpolateRainbow
   );
 
+  const transformedData = data.map((d, i) => {
+    const linePer = timeScale(i + 1),
+      posOnLine = spiral.node().getPointAtLength(linePer),
+      angleOnLine = spiral.node().getPointAtLength(linePer - barWidth / 2);
+
+    d.linePer = linePer; // % distance are on the spiral
+    d.x = posOnLine.x; // x postion on the spiral
+    d.y = posOnLine.y; // y position on the spiral
+
+    d.a = (Math.atan2(angleOnLine.y, angleOnLine.x) * 180) / Math.PI - 90; //angle at the spiral position
+
+    return d;
+  });
+
   svg
     .append("g")
     .selectAll("rect")
-    .data(data)
+    .data(transformedData)
     .enter()
     .append("rect")
     .attr("class", "ring-bar")
     .attr("x", function (d, i) {
-      const linePer = timeScale(i + 1),
-        posOnLine = spiral.node().getPointAtLength(linePer),
-        angleOnLine = spiral.node().getPointAtLength(linePer - barWidth / 2);
-
-      d.linePer = linePer; // % distance are on the spiral
-      d.x = posOnLine.x; // x postion on the spiral
-      d.y = posOnLine.y; // y position on the spiral
-
-      d.a = (Math.atan2(angleOnLine.y, angleOnLine.x) * 180) / Math.PI - 90; //angle at the spiral position
-
       return d.x;
     })
     .attr("y", function (d) {
@@ -81,7 +85,7 @@ function drawSpiral(data, svg, width, height) {
     .attr("height", function (d) {
       return heightScale(d.value);
     })
-    .delay((d, i) => i * 10);
+    .delay((d, i) => 300 + i * 10);
 
   return svg.selectAll(".ring-bar");
 }

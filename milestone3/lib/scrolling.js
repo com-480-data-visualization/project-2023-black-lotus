@@ -67,3 +67,18 @@ export function initializeScrolling() {
   }
   window.addEventListener("wheel", debounce(onWheel, 100));
 }
+
+export function loadOnScroll(id, loadingCallback) {
+  const element = document.getElementById(id);
+  function callback(entries, observer) {
+    for (let entry of entries) {
+      if (entry.isIntersecting) {
+        setTimeout(loadingCallback, 300);
+        observer.unobserve(element);
+      }
+    }
+  }
+  const observer = new IntersectionObserver(callback, { threshold: 0.5 });
+
+  observer.observe(element);
+}

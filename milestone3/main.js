@@ -21,7 +21,7 @@ import bootstrapSpiral from "./charts/spiral";
 import bootstrapBars from "./charts/bars";
 import drawAirlineMap from "./charts/airlines";
 import { removeLoader } from "./lib/loader";
-import { initializeScrolling } from "./lib/scrolling";
+import { initializeScrolling, loadOnScroll } from "./lib/scrolling";
 
 async function initializeBubbleMap(us) {
   let dataLatLon = await loadDataLatLon();
@@ -73,13 +73,14 @@ async function initializeBubbleMap(us) {
 
 async function initializeSpiral(data) {
   const flatCrashesPerMonth = flattenCrashesPerMonth(getCrashesPerMonth(data));
-  bootstrapSpiral(flatCrashesPerMonth, () => removeLoader("ring"));
+  loadOnScroll("ring", () => {
+    bootstrapSpiral(flatCrashesPerMonth, () => removeLoader("ring"));
+  });
 }
 
 async function initializeAirlineMap(us) {
   const data = await getCrashesPerAirlinePerState();
 
-  console.log(data);
   const airlineSelect = document.getElementById("airline-select");
   let defaultAirline = "";
   Object.keys(data).forEach((airline, i) => {
@@ -138,9 +139,12 @@ async function initializeBars(data) {
     manuSelect.value,
     crashButton.checked
   );
-  bootstrapBars(crashesPerModel, () => {
-    removeLoader("bars");
-    removeBars();
+
+  loadOnScroll("bars", () => {
+    bootstrapBars(crashesPerModel, () => {
+      removeLoader("bars");
+      removeBars();
+    });
   });
 
   let restart = (_) => {
@@ -159,15 +163,16 @@ async function initializeBars(data) {
 }
 
 async function initializeDocument() {
-  const us = await getUSTopology();
-  initializeBubbleMap(us);
+  getUSTopology().then((us) => {
+    initializeBubbleMap(us);
+    initializeAirlineMap(us);
+  });
+
   loadAllData().then((data) => {
     initializeSpiral(data);
-  });
-  initializeAirlineMap(us);
-  loadAllData().then((data) => {
     initializeBars(data);
   });
+
   initializeScrolling();
 }
 
