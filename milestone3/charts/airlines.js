@@ -219,7 +219,6 @@ export default function drawAirlineMap(data, us, airline, cleanup) {
     true,
     false,
     (event, d) => {
-      console.log(d);
       const links = svg.selectAll(".link");
       const targetLink = Array.from(links._groups[0]).find((n) => {
         return (

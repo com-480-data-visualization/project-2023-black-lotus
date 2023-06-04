@@ -301,7 +301,6 @@ function drawCountyBarplot(counties, projection) {
       .classed("county-bar", true)
       .attr("x", 1)
       .attr("transform", function (d, i) {
-        console.log(d);
         return "translate(" + x(i + 1) + "," + y(d.properties.crashCount) + ")";
       })
       .attr("width", function (d) {
@@ -382,7 +381,7 @@ export default async function drawBubbleMap(data, us, cleanup) {
   const counties = topojson.feature(us, us.objects.counties);
   initializeCountyCenters(counties);
   updateCounties(projection, counties, data);
-  console.log(svg);
+
   const g = drawUSA(
     svg,
     projection,
