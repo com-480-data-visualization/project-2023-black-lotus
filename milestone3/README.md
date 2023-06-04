@@ -3,7 +3,7 @@
 ## Running
 
 Inside the milestone3 folder run:  
-`npm install`
+`npm install`  
 This will install all the dependencies.
 
 Afterwards:  
