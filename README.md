@@ -100,7 +100,9 @@ The three described visualizations are the main focus of the project. We intend 
 
 ## Milestone 3 (4th June, 5pm)
 
-**80% of the final grade**
+The final website is hosted here: [https://aircrashes.jelenkovic.xyz/](https://aircrashes.jelenkovic.xyz/)  
+You can see the screencast here: [https://drive.google.com/file/d/18IyFnL7m8aMJLYxZ9KH5jNnEfpEL-AsS/view?usp=sharing](https://drive.google.com/file/d/18IyFnL7m8aMJLYxZ9KH5jNnEfpEL-AsS/view?usp=sharing)  
+The .pdf process book can be found [here](./process_book.pdf)
 
 ## Late policy
 
