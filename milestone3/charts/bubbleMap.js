@@ -206,7 +206,9 @@ async function updateMap(svg, projection, counties, scaleVal) {
     d3.max(counties.features.map((f) => f.properties.crashCount)),
   ];
   const radius = d3.scaleSqrt(domain, [0, MAX_BUBBLE_RADIUS / scaleVal]);
-  const circles = svg.selectAll("circle").data(counties.features);
+  const circles = svg
+    .selectAll("circle")
+    .data(counties.features.filter((c) => projection(c.properties.center)));
 
   circles
     .enter()
