@@ -60,7 +60,7 @@ Another great interactive site is [flightconnections](https://www.flightconnecti
 
 ## Milestone 2 (7th May, 5pm)
 
-You can see our report for the Milestone 2 in the .pdf format [here](./data/reports/milestone2.pdf). The current version of our website is [here](https://datavis-m2.jelenkovic.xyz).
+You can see our report for the Milestone 2 in the .pdf format [here](./data/reports/milestone2.pdf). The current version of our website is [here](https://aircrashes.andrija.rs).
 
 ### Visualization Ideas
 
@@ -100,7 +100,7 @@ The three described visualizations are the main focus of the project. We intend 
 
 ## Milestone 3 (4th June, 5pm)
 
-The final website is hosted here: [https://aircrashes.jelenkovic.xyz/](https://aircrashes.jelenkovic.xyz/)  
+The final website is hosted here: [https://aircrashes.andrija.rs/](https://aircrashes.andrija.rs/)  
 You can see the screencast here: [https://drive.google.com/file/d/18IyFnL7m8aMJLYxZ9KH5jNnEfpEL-AsS/view?usp=sharing](https://drive.google.com/file/d/18IyFnL7m8aMJLYxZ9KH5jNnEfpEL-AsS/view?usp=sharing)  
 The .pdf process book can be found [here](./process_book.pdf)
 
